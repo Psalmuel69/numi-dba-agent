@@ -836,18 +836,15 @@ class AgentOrchestrator:
 
         return await self._continue_investigation(state, investigation, channel, channel_account_id)
 
-    async def _environment_for_instance(self, instance_hint: str) -> str | None:
-        """Mirrors ServerRegistry.find_candidates' own matching (exact,
+    async def _find_matching_servers(self, instance_hint: str) -> list[dict]:
+        """Mirrors `ServerRegistry.find_candidates`'s own matching (exact,
         substring, host, and normalized-for-spacing/punctuation/padding)
-        so this convenience never asks "which environment" for a server
-        the Gateway would actually have resolved unambiguously anyway —
-        but only ever when it's unambiguous (more than one match here just
-        means no auto-fill, never a guess; the Gateway still separately,
-        independently re-resolves and validates whatever ends up in the
-        actual tool call target regardless)."""
+        — the one shared implementation `_environment_for_instance` and
+        `_canonical_server_id` both resolve a raw instance_hint through,
+        so they can never drift into two different matching rules."""
         hint = instance_hint.strip().lower()
         hint_normalized = normalize_server_reference(hint)
-        matches: list[str] = []
+        matches: list[dict] = []
         for s in await self._list_servers_cached():
             names = {s["id"].lower(), *(a.lower() for a in (s.get("aliases") or []))}
             host = (s.get("host") or "").lower()
@@ -860,11 +857,38 @@ class AgentOrchestrator:
                 or (host and hint in host)
                 or any(hint_normalized in n for n in normalized_names)
             ):
-                environment = s.get("environment")
-                if environment:
-                    matches.append(environment)
-        unique = set(matches)
-        return matches[0] if len(unique) == 1 else None
+                matches.append(s)
+        return matches
+
+    async def _environment_for_instance(self, instance_hint: str) -> str | None:
+        """Auto-fills the environment for a server the Gateway would
+        actually have resolved unambiguously anyway — but only ever when
+        it's unambiguous (more than one match here just means no
+        auto-fill, never a guess; the Gateway still separately,
+        independently re-resolves and validates whatever ends up in the
+        actual tool call target regardless)."""
+        environments = [
+            s["environment"] for s in await self._find_matching_servers(instance_hint) if s.get("environment")
+        ]
+        unique = set(environments)
+        return environments[0] if len(unique) == 1 else None
+
+    async def _canonical_server_id(self, instance_hint: str) -> str:
+        """Resolves a raw, model-extracted `instance_hint` to the actual
+        registered server id, for anything that persists or looks up by
+        server identity (investigation memory keying, cross-server
+        correlation) rather than just resolving one live tool call's
+        target. Verified live: a real model extracted "Postgres dev 02"
+        for the registered server `postgres-dev-02` — a real tool call
+        still resolves that correctly via the Gateway's own independent
+        fuzzy matching, but storing the raw hint as `server_id` would
+        have silently fragmented memory recall/correlation for the same
+        physical server across conversations that happened to phrase its
+        name differently. Falls back to the raw hint when it matches no
+        registered server (an ad-hoc/unknown name) or more than one
+        (ambiguous) — never guesses which one it meant."""
+        ids = {s["id"] for s in await self._find_matching_servers(instance_hint)}
+        return next(iter(ids)) if len(ids) == 1 else instance_hint
 
     async def _continue_investigation(
         self, state: ConversationState, investigation, channel: str, channel_account_id: str
@@ -950,10 +974,11 @@ class AgentOrchestrator:
             tool_allowed_arguments,
             tool_operation_types,
         )
+        raw_instance = state.database_context.get("instance")
         await self._tool_client.update_investigation(
             investigation.investigation_id,
             InvestigationUpdateRequest(
-                server_id=state.database_context.get("instance"),
+                server_id=await self._canonical_server_id(raw_instance) if raw_instance else None,
                 playbook_id=investigation.playbook_id,
                 environment=state.database_context.get("environment"),
                 target=dict(state.database_context),
@@ -985,7 +1010,8 @@ class AgentOrchestrator:
         if investigation.remote_bootstrap_done:
             return
         investigation.remote_bootstrap_done = True
-        server_id = state.database_context.get("instance")
+        raw_instance = state.database_context.get("instance")
+        server_id = await self._canonical_server_id(raw_instance) if raw_instance else None
         environment = state.database_context.get("environment")
         await self._tool_client.create_investigation(
             InvestigationCreateRequest(

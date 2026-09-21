@@ -143,6 +143,10 @@ services:
       # `LLM_PROVIDER` unset/"" = auto-pick the first provider that has a key.
       LLM_PROVIDER: "${LLM_PROVIDER:-}"
       LLM_MODEL: "${LLM_MODEL:-}"
+      # Task-complexity tiering (see agent.llm.registry.tier_model) — both
+      # empty by default, so a zero-config deployment is unaffected.
+      LLM_FAST_MODEL: "${LLM_FAST_MODEL:-}"
+      LLM_STRONG_MODEL: "${LLM_STRONG_MODEL:-}"
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       GEMINI_API_KEY: "${GEMINI_API_KEY:-}"

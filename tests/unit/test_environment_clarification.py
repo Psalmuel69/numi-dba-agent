@@ -370,6 +370,43 @@ def test_environment_for_instance_matches_id_or_alias_case_insensitively():
     assert asyncio.run(orchestrator._environment_for_instance("nope")) is None
 
 
+def test_canonical_server_id_normalizes_a_loosely_phrased_hint_to_the_registered_id():
+    """Verified live: a real model extracted "Postgres dev 02" for the
+    registered server `postgres-dev-02` — a real tool call still resolves
+    that correctly via the Gateway's own independent fuzzy matching, but
+    without this, `server_id` sent for investigation-memory keying would
+    have been the raw, inconsistently-phrased hint instead of the stable
+    id two different conversations both need to agree on."""
+    servers = [{"id": "postgres-dev-02", "aliases": [], "environment": "development"}]
+    orchestrator = AgentOrchestrator(
+        llm_registry=LLMRegistry.for_testing(_FakeLLM()),
+        tool_client=_FakeToolClient(servers),
+        context=ContextManager(),
+    )
+    import asyncio
+
+    assert asyncio.run(orchestrator._canonical_server_id("Postgres dev 02")) == "postgres-dev-02"
+    assert asyncio.run(orchestrator._canonical_server_id("postgres-dev-02")) == "postgres-dev-02"
+
+
+def test_canonical_server_id_falls_back_to_the_raw_hint_when_unmatched_or_ambiguous():
+    servers = [
+        {"id": "postgres-dev-01", "aliases": [], "environment": "development"},
+        {"id": "postgres-dev-02", "aliases": [], "environment": "development"},
+    ]
+    orchestrator = AgentOrchestrator(
+        llm_registry=LLMRegistry.for_testing(_FakeLLM()),
+        tool_client=_FakeToolClient(servers),
+        context=ContextManager(),
+    )
+    import asyncio
+
+    # No registered server matches "nope" at all.
+    assert asyncio.run(orchestrator._canonical_server_id("nope")) == "nope"
+    # "postgres-dev" substring-matches both registered servers — ambiguous.
+    assert asyncio.run(orchestrator._canonical_server_id("postgres-dev")) == "postgres-dev"
+
+
 class _Turn2AsksThenConcludesLLM:
     """Live-reproduced regression, both halves in one conversation:
     `extract_intent` returns each of `intents` in order (one per FRESH
