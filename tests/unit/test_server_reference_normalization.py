@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.models.target import DatabaseTarget, Environment
-from inumi.common.server_reference import normalize_server_reference
-from inumi.gateway.domain.servers import ServerRegistry
+from numi.common.models.target import DatabaseTarget, Environment
+from numi.common.server_reference import normalize_server_reference
+from numi.gateway.domain.servers import ServerRegistry
 
 
 def test_normalizes_spacing_punctuation_and_zero_padding_identically():

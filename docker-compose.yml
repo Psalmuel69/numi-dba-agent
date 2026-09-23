@@ -1,19 +1,19 @@
-name: inumi
+name: numi
 
 services:
   # --- Control plane -------------------------------------------------------
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: inumi
-      POSTGRES_PASSWORD: inumi
-      POSTGRES_DB: inumi_control
+      POSTGRES_USER: numi
+      POSTGRES_PASSWORD: numi
+      POSTGRES_DB: numi_control
     ports:
       - "5432:5432"
     volumes:
-      - inumi-postgres-data:/var/lib/postgresql/data
+      - numi-postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U inumi -d inumi_control"]
+      test: ["CMD-SHELL", "pg_isready -U numi -d numi_control"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -76,7 +76,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: change-me-root
       MYSQL_DATABASE: sample_app
-      MYSQL_USER: inumi_diag
+      MYSQL_USER: numi_diag
       MYSQL_PASSWORD: change-me
     ports:
       - "3306:3306"
@@ -95,7 +95,7 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: change-me-root
       MARIADB_DATABASE: sample_app
-      MARIADB_USER: inumi_diag
+      MARIADB_USER: numi_diag
       MARIADB_PASSWORD: change-me
     ports:
       - "3307:3306"
@@ -113,8 +113,8 @@ services:
       context: .
     command: ["sh", "-c", "alembic upgrade head"]
     environment: &common-env
-      INUMI_ENV: development
-      CONTROL_DB_URL: postgresql+asyncpg://inumi:inumi@postgres:5432/inumi_control
+      NUMI_ENV: development
+      CONTROL_DB_URL: postgresql+asyncpg://numi:numi@postgres:5432/numi_control
       REDIS_URL: redis://redis:6379/0
       SECRETS_PROVIDER: local_dev
       IDENTITY_PROVIDER: mock
@@ -131,9 +131,9 @@ services:
       # dev stack works with zero setup, but it must never be the value any
       # real deployment actually runs with — set SERVICE_JWT_SECRET in your
       # environment/.env to override it. validate_for_production() refuses
-      # to boot with INUMI_ENV=production while this default is still active.
+      # to boot with NUMI_ENV=production while this default is still active.
       SERVICE_JWT_SECRET: "${SERVICE_JWT_SECRET:-dev-only-change-me-in-production}"
-      SERVICE_JWT_ISSUER: inumi-internal
+      SERVICE_JWT_ISSUER: numi-internal
       GATEWAY_BASE_URL: http://gateway:8001
       EXECUTION_BASE_URL: http://execution:8002
       AGENT_BASE_URL: http://agent:8000
@@ -255,4 +255,4 @@ services:
       - agent
 
 volumes:
-  inumi-postgres-data:
+  numi-postgres-data:

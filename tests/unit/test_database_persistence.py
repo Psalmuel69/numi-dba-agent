@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.planner.actions import ProposeToolCall
-from inumi.common.models.tool import ToolCallResponse, ToolCallStatus
+from numi.agent.planner.actions import ProposeToolCall
+from numi.common.models.tool import ToolCallResponse, ToolCallStatus
 from tests.unit.test_orchestrator_playbooks import _orchestrator, _state_and_investigation
 
 

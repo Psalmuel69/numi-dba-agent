@@ -12,16 +12,16 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.models.catalog import LeastPrivilegeFinding, ServerCatalog
-from inumi.execution.credentials.provider import DatabaseCredentials
-from inumi.execution.discovery.base import (
+from numi.common.models.catalog import LeastPrivilegeFinding, ServerCatalog
+from numi.execution.credentials.provider import DatabaseCredentials
+from numi.execution.discovery.base import (
     LEAST_PRIVILEGE_SCAN_LIMIT,
     build_least_privilege_finding,
     run_least_privilege_check,
 )
-from inumi.execution.discovery.mysql import MySQLDiscoverer
-from inumi.execution.discovery.postgresql import PostgreSQLDiscoverer
-from inumi.execution.discovery.sqlserver import SQLServerDiscoverer
+from numi.execution.discovery.mysql import MySQLDiscoverer
+from numi.execution.discovery.postgresql import PostgreSQLDiscoverer
+from numi.execution.discovery.sqlserver import SQLServerDiscoverer
 from tests.fakes import FakeQueryExecutor
 
 
@@ -29,7 +29,7 @@ def _creds(database: str = "corebanking") -> DatabaseCredentials:
     return DatabaseCredentials(
         host="db.internal",
         port=5432,
-        username="inumi_diag",
+        username="numi_diag",
         password="unused-in-these-tests",  # noqa: S106 — a fake, never a real connection
         database=database,
     )
@@ -59,7 +59,7 @@ class TestPerEngineTheCheckDetectsAnOverPrivilegedLogin:
         assert finding.checked is True
         assert finding.has_user_table_select is True
         assert finding.granted_object_count == 2
-        assert finding.login == "inumi_diag"
+        assert finding.login == "numi_diag"
         assert finding.sample_objects == ["public.accounts", "public.customers"]
         assert finding.warning_text() is not None
         assert "should be revoked for least-privilege" in finding.warning_text()
@@ -82,7 +82,7 @@ class TestPerEngineTheCheckDetectsAnOverPrivilegedLogin:
 
 
 class TestTheQueriesAreReadOnlyIntrospectionOfTheRightViews:
-    """Inumi reports, a human DBA acts — the check must never attempt to
+    """Numi reports, a human DBA acts — the check must never attempt to
     change a grant, and must exclude the system catalogs its login is
     legitimately supposed to read."""
 

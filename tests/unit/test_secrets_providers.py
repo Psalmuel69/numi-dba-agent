@@ -12,7 +12,7 @@ The three properties every one of these four providers must hold:
 
   1. a valid secret parses into the same `DatabaseCredentials` the
      local-dev YAML provider would have produced;
-  2. *any* SDK failure becomes `InumiError(DEPENDENCY_UNAVAILABLE)` — never
+  2. *any* SDK failure becomes `NumiError(DEPENDENCY_UNAVAILABLE)` — never
      a raw vendor exception, never a partial credential;
   3. an unconfigured backend still refuses without ever touching the SDK.
 """
@@ -24,8 +24,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from inumi.common.models.failures import FailureCode, InumiError
-from inumi.execution.credentials.provider import (
+from numi.common.models.failures import FailureCode, NumiError
+from numi.execution.credentials.provider import (
     AWSSecretsManagerCredentialProvider,
     AzureKeyVaultCredentialProvider,
     GCPSecretManagerCredentialProvider,
@@ -38,7 +38,7 @@ from inumi.execution.credentials.provider import (
 _SECRET = {
     "host": "db-prod-01.internal",
     "port": 5432,
-    "username": "inumi_diag",
+    "username": "numi_diag",
     "password": "s3cr3t-value",
     "database": "postgres",
     "options": {"sslmode": "require"},
@@ -47,15 +47,15 @@ _SECRET = {
 
 class _BoomError(Exception):
     """Stands in for a vendor SDK exception (auth failure, not found,
-    timeout). Deliberately NOT an InumiError, so a test asserting
-    `pytest.raises(InumiError)` proves the mapping actually happened rather
+    timeout). Deliberately NOT an NumiError, so a test asserting
+    `pytest.raises(NumiError)` proves the mapping actually happened rather
     than the exception merely passing through."""
 
 
 def _assert_parsed(creds) -> None:
     assert creds.host == "db-prod-01.internal"
     assert creds.port == 5432
-    assert creds.username == "inumi_diag"
+    assert creds.username == "numi_diag"
     assert creds.password.get_secret_value() == "s3cr3t-value"
     assert creds.database == "postgres"
     assert creds.options == {"sslmode": "require"}
@@ -146,7 +146,7 @@ async def test_vault_reads_and_parses_a_valid_kv_v2_secret():
 
     _assert_parsed(await provider.get_credentials("pg-prod-01"))
     # KV v2 path convention: <mount_point>/<path_prefix>/<server id>.
-    assert client.calls[0]["path"] == "inumi/db/pg-prod-01"
+    assert client.calls[0]["path"] == "numi/db/pg-prod-01"
     assert client.calls[0]["mount_point"] == "secret"
 
 
@@ -155,7 +155,7 @@ async def test_vault_maps_any_sdk_error_to_dependency_unavailable():
     client = _FakeVaultClient(error=_BoomError("permission denied"))
     provider = VaultCredentialProvider("https://vault.internal", "tok", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     _assert_fails_closed(exc_info)
 
@@ -167,7 +167,7 @@ async def test_vault_without_addr_or_token_fails_closed_without_touching_the_sdk
     client = _FakeVaultClient(response={"data": {"data": dict(_SECRET)}})
     for addr, token in (("", "tok"), ("https://vault.internal", ""), ("", "")):
         provider = VaultCredentialProvider(addr, token, client=client)
-        with pytest.raises(InumiError) as exc_info:
+        with pytest.raises(NumiError) as exc_info:
             await provider.get_credentials("pg-prod-01")
         assert exc_info.value.code == FailureCode.DEPENDENCY_UNAVAILABLE
         assert "not configured" in exc_info.value.detail
@@ -179,7 +179,7 @@ async def test_vault_response_without_the_nested_data_object_fails_closed():
     client = _FakeVaultClient(response={"data": {}})
     provider = VaultCredentialProvider("https://vault.internal", "tok", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     _assert_fails_closed(exc_info)
 
@@ -207,7 +207,7 @@ async def test_aws_reads_and_parses_a_valid_secret_string():
     provider = AWSSecretsManagerCredentialProvider("eu-west-1", client=client)
 
     _assert_parsed(await provider.get_credentials("pg-prod-01"))
-    assert client.calls[0]["SecretId"] == "inumi/db/pg-prod-01"
+    assert client.calls[0]["SecretId"] == "numi/db/pg-prod-01"
 
 
 @pytest.mark.asyncio
@@ -223,7 +223,7 @@ async def test_aws_maps_any_sdk_error_to_dependency_unavailable():
     client = _FakeAWSClient(error=_BoomError("ResourceNotFoundException"))
     provider = AWSSecretsManagerCredentialProvider("eu-west-1", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     _assert_fails_closed(exc_info)
 
@@ -233,7 +233,7 @@ async def test_aws_without_a_region_fails_closed_without_touching_the_sdk():
     client = _FakeAWSClient(response={"SecretString": json.dumps(_SECRET)})
     provider = AWSSecretsManagerCredentialProvider("", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     assert exc_info.value.code == FailureCode.DEPENDENCY_UNAVAILABLE
     assert "not configured" in exc_info.value.detail
@@ -247,7 +247,7 @@ async def test_aws_secret_that_is_not_json_fails_closed():
     client = _FakeAWSClient(response={"SecretString": "s3cr3t-value"})
     provider = AWSSecretsManagerCredentialProvider("eu-west-1", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     _assert_fails_closed(exc_info)
 
@@ -260,10 +260,10 @@ async def test_aws_secret_that_is_not_json_fails_closed():
 @pytest.mark.asyncio
 async def test_azure_reads_and_parses_a_valid_secret():
     client = _FakeAzureClient(value=json.dumps(_SECRET))
-    provider = AzureKeyVaultCredentialProvider("https://inumi-kv.vault.azure.net", client=client)
+    provider = AzureKeyVaultCredentialProvider("https://numi-kv.vault.azure.net", client=client)
 
     _assert_parsed(await provider.get_credentials("pg-prod-01"))
-    assert client.calls[0] == "inumi-db-pg-prod-01"
+    assert client.calls[0] == "numi-db-pg-prod-01"
 
 
 @pytest.mark.asyncio
@@ -271,18 +271,18 @@ async def test_azure_normalizes_a_server_id_into_a_legal_key_vault_name():
     """Key Vault names allow only letters/digits/dashes — a dot in a server
     id must not be sent in a URL that fails opaquely."""
     client = _FakeAzureClient(value=json.dumps(_SECRET))
-    provider = AzureKeyVaultCredentialProvider("https://inumi-kv.vault.azure.net", client=client)
+    provider = AzureKeyVaultCredentialProvider("https://numi-kv.vault.azure.net", client=client)
 
     await provider.get_credentials("pg.prod_01")
-    assert client.calls[0] == "inumi-db-pg-prod-01"
+    assert client.calls[0] == "numi-db-pg-prod-01"
 
 
 @pytest.mark.asyncio
 async def test_azure_maps_any_sdk_error_to_dependency_unavailable():
     client = _FakeAzureClient(error=_BoomError("ClientAuthenticationError"))
-    provider = AzureKeyVaultCredentialProvider("https://inumi-kv.vault.azure.net", client=client)
+    provider = AzureKeyVaultCredentialProvider("https://numi-kv.vault.azure.net", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     _assert_fails_closed(exc_info)
 
@@ -292,7 +292,7 @@ async def test_azure_without_a_vault_url_fails_closed_without_touching_the_sdk()
     client = _FakeAzureClient(value=json.dumps(_SECRET))
     provider = AzureKeyVaultCredentialProvider("", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     assert exc_info.value.code == FailureCode.DEPENDENCY_UNAVAILABLE
     assert "not configured" in exc_info.value.detail
@@ -307,21 +307,21 @@ async def test_azure_without_a_vault_url_fails_closed_without_touching_the_sdk()
 @pytest.mark.asyncio
 async def test_gcp_reads_and_parses_a_valid_secret_version():
     client = _FakeGCPClient(data=json.dumps(_SECRET).encode("utf-8"))
-    provider = GCPSecretManagerCredentialProvider("inumi-prod", client=client)
+    provider = GCPSecretManagerCredentialProvider("numi-prod", client=client)
 
     _assert_parsed(await provider.get_credentials("pg-prod-01"))
     assert (
         client.calls[0]["name"]
-        == "projects/inumi-prod/secrets/inumi-db-pg-prod-01/versions/latest"
+        == "projects/numi-prod/secrets/numi-db-pg-prod-01/versions/latest"
     )
 
 
 @pytest.mark.asyncio
 async def test_gcp_maps_any_sdk_error_to_dependency_unavailable():
     client = _FakeGCPClient(error=_BoomError("PermissionDenied"))
-    provider = GCPSecretManagerCredentialProvider("inumi-prod", client=client)
+    provider = GCPSecretManagerCredentialProvider("numi-prod", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     _assert_fails_closed(exc_info)
 
@@ -331,7 +331,7 @@ async def test_gcp_without_a_project_id_fails_closed_without_touching_the_sdk():
     client = _FakeGCPClient(data=json.dumps(_SECRET).encode("utf-8"))
     provider = GCPSecretManagerCredentialProvider("", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     assert exc_info.value.code == FailureCode.DEPENDENCY_UNAVAILABLE
     assert "not configured" in exc_info.value.detail
@@ -352,7 +352,7 @@ async def test_a_secret_missing_any_required_field_fails_closed(missing_field):
     client = _FakeAWSClient(response={"SecretString": json.dumps(payload)})
     provider = AWSSecretsManagerCredentialProvider("eu-west-1", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     assert exc_info.value.code == FailureCode.DEPENDENCY_UNAVAILABLE
     assert missing_field in exc_info.value.detail  # names the field, not its value
@@ -364,7 +364,7 @@ async def test_a_non_integer_port_fails_closed():
     client = _FakeAWSClient(response={"SecretString": json.dumps(payload)})
     provider = AWSSecretsManagerCredentialProvider("eu-west-1", client=client)
 
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         await provider.get_credentials("pg-prod-01")
     assert exc_info.value.code == FailureCode.DEPENDENCY_UNAVAILABLE
 
@@ -402,8 +402,8 @@ class _FakeSettings:
         self.vault_addr = "https://vault.internal"
         self.vault_token = "tok"
         self.aws_region = "eu-west-1"
-        self.azure_key_vault_url = "https://inumi-kv.vault.azure.net"
-        self.gcp_project_id = "inumi-prod"
+        self.azure_key_vault_url = "https://numi-kv.vault.azure.net"
+        self.gcp_project_id = "numi-prod"
 
 
 @pytest.mark.parametrize(
@@ -423,7 +423,7 @@ def test_build_credential_provider_routes_to_each_real_backend(name, expected):
 def test_build_credential_provider_still_defaults_to_the_dev_safe_backend():
     """`SECRETS_PROVIDER` unset means `local_dev` in `Settings` — the
     dev-safe default is unchanged by adding the real backends."""
-    from inumi.common.config import Settings
+    from numi.common.config import Settings
 
     settings = Settings(_env_file=None)
     assert settings.secrets_provider == "local_dev"
@@ -431,6 +431,6 @@ def test_build_credential_provider_still_defaults_to_the_dev_safe_backend():
 
 
 def test_build_credential_provider_rejects_an_unknown_backend():
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         build_credential_provider(_FakeSettings("not-a-real-backend"))
     assert exc_info.value.code == FailureCode.DEPENDENCY_UNAVAILABLE

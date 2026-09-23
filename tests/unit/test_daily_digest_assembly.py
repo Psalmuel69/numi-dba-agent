@@ -19,9 +19,9 @@ import datetime as dt
 
 import pytest
 
-from inumi.agent.orchestrator import ScheduledSummary
-from inumi.agent.scheduled_report import DailyDigestRunner, build_digest, select_servers
-from inumi.common.config import Settings
+from numi.agent.orchestrator import ScheduledSummary
+from numi.agent.scheduled_report import DailyDigestRunner, build_digest, select_servers
+from numi.common.config import Settings
 
 _AT = dt.datetime(2026, 3, 4, 6, 0, tzinfo=dt.UTC)
 
@@ -137,8 +137,8 @@ def test_the_digest_is_stamped_and_says_when_nothing_matched():
 
 
 def test_a_blocked_write_proposal_is_surfaced_in_the_servers_block():
-    """"Inumi wanted to act and was structurally stopped" is information a
-    DBA should see, worded so it can never be misread as "Inumi did
+    """"Numi wanted to act and was structurally stopped" is information a
+    DBA should see, worded so it can never be misread as "Numi did
     something"."""
     summary = ScheduledSummary(
         server_id="core-banking-prod",

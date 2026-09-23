@@ -7,7 +7,7 @@ Channels service that isn't a webhook authenticated by its own transport's
 scheme, and an unauthenticated "post arbitrary text into a DBA channel"
 endpoint would be a real hole — so a missing, forged, or wrong-audience
 token must all be refused. Second, the audience string itself: the Agent
-issues `inumi-channels` and the Channels service verifies `inumi-channels`,
+issues `numi-channels` and the Channels service verifies `numi-channels`,
 and a mismatch between those two literals is exactly the kind of bug no
 unit test on either side can see, but which would silently break the digest
 every morning in production.
@@ -19,10 +19,10 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from inumi.agent.scheduled_report import ChannelsDigestPublisher
-from inumi.channels.api.app import create_app as create_channels_app
-from inumi.channels.slack.sender import SlackMessageSender
-from inumi.common.service_auth import ServiceTokenIssuer
+from numi.agent.scheduled_report import ChannelsDigestPublisher
+from numi.channels.api.app import create_app as create_channels_app
+from numi.channels.slack.sender import SlackMessageSender
+from numi.common.service_auth import ServiceTokenIssuer
 
 # Aliased on import: pytest would otherwise collect the helper's own
 # `test_`-prefixed name as a test case in this module.
@@ -67,7 +67,7 @@ def test_notify_without_a_service_token_is_rejected(channels_app, posted):
 
 def test_notify_with_a_forged_service_token_is_rejected(channels_app, settings, posted):
     forged = ServiceTokenIssuer("wrong-secret", settings.service_jwt_issuer).issue(
-        service_name="agent", audience="inumi-channels"
+        service_name="agent", audience="numi-channels"
     )
 
     with TestClient(channels_app) as client:
@@ -85,7 +85,7 @@ def test_notify_with_a_token_for_a_different_audience_is_rejected(channels_app, 
     """A correctly-signed token minted for another hop (Agent -> Gateway)
     must not be replayable here — audience scoping is the point of
     `common.service_auth`."""
-    wrong_audience = issuer.issue(service_name="agent", audience="inumi-gateway")
+    wrong_audience = issuer.issue(service_name="agent", audience="numi-gateway")
 
     with TestClient(channels_app) as client:
         response = client.post(
@@ -99,12 +99,12 @@ def test_notify_with_a_token_for_a_different_audience_is_rejected(channels_app, 
 
 
 def test_a_valid_notify_posts_the_text_to_the_requested_channel(channels_app, issuer, posted):
-    token = issuer.issue(service_name="agent", audience="inumi-channels")
+    token = issuer.issue(service_name="agent", audience="numi-channels")
 
     with TestClient(channels_app) as client:
         response = client.post(
             "/v1/notify",
-            json={"channel_id": "C_DBA", "text": "Inumi daily health digest — ..."},
+            json={"channel_id": "C_DBA", "text": "Numi daily health digest — ..."},
             headers={"X-Service-Token": token},
         )
 
@@ -112,7 +112,7 @@ def test_a_valid_notify_posts_the_text_to_the_requested_channel(channels_app, is
     assert len(posted) == 1
     channel, text, blocks = posted[0]
     assert channel == "C_DBA"
-    assert text.startswith("Inumi daily health digest")
+    assert text.startswith("Numi daily health digest")
     # Text only: a digest can never carry an approval card, so there is no
     # path here for an unattended run to put a clickable action in front of
     # a DBA (see `NotifyRequest`'s own docstring).

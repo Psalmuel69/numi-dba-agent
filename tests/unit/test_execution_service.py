@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.config import Settings
-from inumi.common.models.execution import ExecutionRequest
-from inumi.common.models.target import Platform
-from inumi.execution.service import ExecutionService
+from numi.common.config import Settings
+from numi.common.models.execution import ExecutionRequest
+from numi.common.models.target import Platform
+from numi.execution.service import ExecutionService
 from tests.canned_adapter import canned_adapter_factory
 
 
@@ -78,7 +78,7 @@ async def test_without_configured_credentials_execution_fails_closed():
     """With no adapter_factory (i.e. the real path) and a misconfigured
     secrets provider, execution must never fall back to running anyway — it
     fails closed (spec §63)."""
-    from inumi.execution.credentials.provider import build_credential_provider
+    from numi.execution.credentials.provider import build_credential_provider
 
     settings = _settings(secrets_provider="vault")
     service = ExecutionService(settings, credential_provider=build_credential_provider(settings))

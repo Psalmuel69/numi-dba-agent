@@ -12,8 +12,8 @@ JSON itself are rejected outright — only "schema"/"object" work."""
 
 from __future__ import annotations
 
-from inumi.agent.llm.base import _ACTION_SYSTEM, _FLAT_ACTION_SCHEMA
-from inumi.common.models.target import DatabaseTarget
+from numi.agent.llm.base import _ACTION_SYSTEM, _FLAT_ACTION_SCHEMA
+from numi.common.models.target import DatabaseTarget
 
 
 def test_database_target_only_accepts_the_short_alias_keys():
@@ -82,7 +82,7 @@ def test_arguments_properties_cover_every_field_every_enabled_tool_actually_uses
     know about, the model has no template slot for it and this test catches
     that before it becomes another live "the model understood but the
     structured output stayed empty" incident."""
-    from inumi.common.models import tool_arguments
+    from numi.common.models import tool_arguments
 
     # Excluded: the raw-SQL tool args (execute_sql/execute_readonly_sql) are
     # disabled by default and out of this round's scope — deliberately not

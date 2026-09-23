@@ -15,8 +15,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from inumi.agent.llm.anthropic_provider import AnthropicLLMProvider
-from inumi.agent.llm.gemini_provider import (
+from numi.agent.llm.anthropic_provider import AnthropicLLMProvider
+from numi.agent.llm.gemini_provider import (
     _DEFAULT_COOLDOWN_SECONDS,
     _MAX_COOLDOWN_SECONDS,
     _MODEL_FALLBACK_CHAIN,
@@ -26,7 +26,7 @@ from inumi.agent.llm.gemini_provider import (
     _is_model_unavailable_error,
     _meets_min_version,
 )
-from inumi.agent.llm.openai_provider import DeepSeekLLMProvider, OpenAILLMProvider
+from numi.agent.llm.openai_provider import DeepSeekLLMProvider, OpenAILLMProvider
 
 # --- OpenAI / DeepSeek ------------------------------------------------------
 
@@ -202,7 +202,7 @@ async def test_anthropic_list_models_returns_live_ids():
 
 @pytest.mark.asyncio
 async def test_anthropic_list_models_falls_back_to_known_models_on_api_error():
-    from inumi.agent.llm.anthropic_provider import _KNOWN_MODELS
+    from numi.agent.llm.anthropic_provider import _KNOWN_MODELS
 
     provider = AnthropicLLMProvider(api_key="k")
     provider._client = _FailingAnthropicModelsClient()
@@ -318,7 +318,7 @@ async def test_gemini_list_models_filters_by_min_version_and_capability():
 
 @pytest.mark.asyncio
 async def test_gemini_list_models_falls_back_to_known_models_on_api_error():
-    from inumi.agent.llm.gemini_provider import _KNOWN_MODELS
+    from numi.agent.llm.gemini_provider import _KNOWN_MODELS
 
     provider = _gemini_provider()
     provider._client = _FakeGeminiClient(list_error=RuntimeError("boom"))
@@ -453,7 +453,7 @@ def test_cooldown_seconds_falls_back_to_the_default_when_the_captured_value_cann
     """The real regex only ever captures digits, so this branch is a pure
     defensive fallback — pin it directly by swapping in a regex that can
     capture something float() rejects, rather than leaving it unexercised."""
-    import inumi.agent.llm.gemini_provider as gemini_provider_module
+    import numi.agent.llm.gemini_provider as gemini_provider_module
 
     monkeypatch.setattr(gemini_provider_module, "_RETRY_DELAY_RE", re.compile(r"retryDelay: (\w+)"))
     exc = RuntimeError("retryDelay: soon")

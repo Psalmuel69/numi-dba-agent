@@ -24,10 +24,10 @@ import os
 
 import pytest
 
-from inumi.execution.adapters.mysql import MySQLAdapter
-from inumi.execution.adapters.postgresql import PostgreSQLAdapter
-from inumi.execution.adapters.sqlserver import SQLServerAdapter
-from inumi.execution.credentials.provider import LocalDevCredentialProvider
+from numi.execution.adapters.mysql import MySQLAdapter
+from numi.execution.adapters.postgresql import PostgreSQLAdapter
+from numi.execution.adapters.sqlserver import SQLServerAdapter
+from numi.execution.credentials.provider import LocalDevCredentialProvider
 
 _OPT_IN = os.environ.get("RUN_LIVE_DB_TESTS") == "1"
 _CREDS_PATH = "config/dev_credentials.yaml"
@@ -41,7 +41,7 @@ async def _get_credentials_or_skip(server_id: str):
 
 
 async def _pg_executor_or_skip(server_id: str):
-    from inumi.execution.adapters.connections import PostgreSQLQueryExecutor
+    from numi.execution.adapters.connections import PostgreSQLQueryExecutor
 
     creds = await _get_credentials_or_skip(server_id)
     executor = PostgreSQLQueryExecutor(creds)
@@ -53,7 +53,7 @@ async def _pg_executor_or_skip(server_id: str):
 
 
 async def _mssql_executor_or_skip(server_id: str):
-    from inumi.execution.adapters.connections import SQLServerQueryExecutor
+    from numi.execution.adapters.connections import SQLServerQueryExecutor
 
     creds = await _get_credentials_or_skip(server_id)
     executor = SQLServerQueryExecutor(creds)
@@ -65,7 +65,7 @@ async def _mssql_executor_or_skip(server_id: str):
 
 
 async def _mysql_executor_or_skip(server_id: str):
-    from inumi.execution.adapters.connections import MySQLQueryExecutor
+    from numi.execution.adapters.connections import MySQLQueryExecutor
 
     creds = await _get_credentials_or_skip(server_id)
     executor = MySQLQueryExecutor(creds)

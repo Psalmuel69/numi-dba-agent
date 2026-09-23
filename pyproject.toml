@@ -1,7 +1,7 @@
 [project]
-name = "inumi-dba-agent"
+name = "numi-dba-agent"
 version = "0.1.0"
-description = "Inumi: Enterprise AI DBA Agent & Secure DBA Control Gateway"
+description = "Numi: Enterprise AI DBA Agent & Secure DBA Control Gateway"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.115.0",

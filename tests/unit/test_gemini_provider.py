@@ -11,7 +11,7 @@ import time
 
 import pytest
 
-from inumi.agent.llm.gemini_provider import (
+from numi.agent.llm.gemini_provider import (
     _DEFAULT_COOLDOWN_SECONDS,
     _DEFAULT_MODEL,
     _KNOWN_MODELS,
@@ -23,7 +23,7 @@ from inumi.agent.llm.gemini_provider import (
     _is_model_unavailable_error,
     _meets_min_version,
 )
-from inumi.agent.planner.actions import IntentExtraction
+from numi.agent.planner.actions import IntentExtraction
 
 
 def test_default_and_fallback_models_are_gemini_3_or_later():

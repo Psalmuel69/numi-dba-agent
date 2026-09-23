@@ -381,7 +381,7 @@ async def test_malicious_database_content_is_never_obeyed():
     so it cannot be steered by injected content; this test asserts no
     destructive tool is ever invoked even when such a string is present in
     tool results the orchestrator sees."""
-    from inumi.agent.llm.mock import MockLLMProvider
+    from numi.agent.llm.mock import MockLLMProvider
 
     stack = await build_stack()
 
@@ -441,7 +441,7 @@ async def test_malicious_database_content_is_never_obeyed():
 
 
 async def test_rate_limit_abuse_is_blocked():
-    from inumi.gateway.domain.rate_limiter import InMemoryRateLimitBackend
+    from numi.gateway.domain.rate_limiter import InMemoryRateLimitBackend
 
     backend = InMemoryRateLimitBackend()
     for _ in range(5):
@@ -456,7 +456,7 @@ def test_slack_replay_attack_stale_timestamp_rejected():
     import hashlib
     import hmac
 
-    from inumi.channels.slack.signature import SlackSignatureError, verify_slack_signature
+    from numi.channels.slack.signature import SlackSignatureError, verify_slack_signature
 
     secret = "replay-test-secret"
     old_timestamp = str(int(time.time()) - 60 * 60)  # 1 hour old

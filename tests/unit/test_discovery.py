@@ -8,21 +8,21 @@ import datetime as dt
 import httpx
 import pytest
 
-from inumi.common.models.catalog import DiscoveredDatabase, DiscoveredObject, ServerCatalog
-from inumi.common.models.execution import DiscoveryRequest, ExecutionRequest, ExecutionResult
-from inumi.common.models.target import Platform
-from inumi.execution.credentials.provider import DatabaseCredentials
-from inumi.execution.discovery.base import (
+from numi.common.models.catalog import DiscoveredDatabase, DiscoveredObject, ServerCatalog
+from numi.common.models.execution import DiscoveryRequest, ExecutionRequest, ExecutionResult
+from numi.common.models.target import Platform
+from numi.execution.credentials.provider import DatabaseCredentials
+from numi.execution.discovery.base import (
     LEAST_PRIVILEGE_SCAN_LIMIT,
     build_least_privilege_finding,
     run_least_privilege_check,
 )
-from inumi.execution.discovery.engine import _discoverer_for, run_discovery
-from inumi.execution.discovery.mysql import MySQLDiscoverer
-from inumi.execution.discovery.postgresql import PostgreSQLDiscoverer
-from inumi.execution.discovery.sqlserver import SQLServerDiscoverer, _quote
-from inumi.gateway.domain.discovery import DiscoveryOrchestrator, clean_discovery_error
-from inumi.gateway.infrastructure.execution_client import ExecutionClient
+from numi.execution.discovery.engine import _discoverer_for, run_discovery
+from numi.execution.discovery.mysql import MySQLDiscoverer
+from numi.execution.discovery.postgresql import PostgreSQLDiscoverer
+from numi.execution.discovery.sqlserver import SQLServerDiscoverer, _quote
+from numi.gateway.domain.discovery import DiscoveryOrchestrator, clean_discovery_error
+from numi.gateway.infrastructure.execution_client import ExecutionClient
 
 
 def test_dispatch_picks_the_right_discoverer():
@@ -206,7 +206,7 @@ class _QueuedFakeExecutor:
 
 def _scripted_connection_factory(responses_by_database: dict[str, list]):
     """Builds a fake `*QueryExecutor` class for monkeypatching
-    `inumi.execution.adapters.connections.<Engine>QueryExecutor`, so a
+    `numi.execution.adapters.connections.<Engine>QueryExecutor`, so a
     discoverer's `discover()` can run end-to-end against scripted responses
     instead of a live database. Each constructed instance gets its own
     response queue, keyed by `credentials.database` — the same way
@@ -317,7 +317,7 @@ class TestMySQLDiscoverer:
         factory = _scripted_connection_factory({"app_db": responses})
 
         with pytest.MonkeyPatch.context() as mp:
-            mp.setattr("inumi.execution.adapters.connections.MySQLQueryExecutor", factory)
+            mp.setattr("numi.execution.adapters.connections.MySQLQueryExecutor", factory)
             catalog = await MySQLDiscoverer(_credentials("app_db")).discover("mysql-01")
 
         assert catalog.engine_version == "8.0.35"
@@ -347,7 +347,7 @@ class TestMySQLDiscoverer:
         factory = _scripted_connection_factory({"app_db": responses})
 
         with pytest.MonkeyPatch.context() as mp:
-            mp.setattr("inumi.execution.adapters.connections.MySQLQueryExecutor", factory)
+            mp.setattr("numi.execution.adapters.connections.MySQLQueryExecutor", factory)
             catalog = await MySQLDiscoverer(_credentials("app_db")).discover("mysql-01")
 
         assert catalog.database_names() == ["app_db"]
@@ -366,7 +366,7 @@ class TestMySQLDiscoverer:
         factory = _scripted_connection_factory({"app_db": responses})
 
         with pytest.MonkeyPatch.context() as mp:
-            mp.setattr("inumi.execution.adapters.connections.MySQLQueryExecutor", factory)
+            mp.setattr("numi.execution.adapters.connections.MySQLQueryExecutor", factory)
             with pytest.raises(RuntimeError, match="connection reset"):
                 await MySQLDiscoverer(_credentials("app_db")).discover("mysql-01")
 
@@ -442,7 +442,7 @@ class TestSQLServerDiscoverer:
         factory = _scripted_connection_factory({"CoreBanking": responses})
 
         with pytest.MonkeyPatch.context() as mp:
-            mp.setattr("inumi.execution.adapters.connections.SQLServerQueryExecutor", factory)
+            mp.setattr("numi.execution.adapters.connections.SQLServerQueryExecutor", factory)
             catalog = await SQLServerDiscoverer(_credentials("CoreBanking")).discover("sqlserver-01")
 
         # tempdb is filtered by the SQL itself (`WHERE d.name <> 'tempdb'`),
@@ -476,7 +476,7 @@ class TestSQLServerDiscoverer:
         factory = _scripted_connection_factory({"CoreBanking": responses})
 
         with pytest.MonkeyPatch.context() as mp:
-            mp.setattr("inumi.execution.adapters.connections.SQLServerQueryExecutor", factory)
+            mp.setattr("numi.execution.adapters.connections.SQLServerQueryExecutor", factory)
             catalog = await SQLServerDiscoverer(_credentials("CoreBanking")).discover("sqlserver-01")
 
         assert catalog.database_names() == ["CoreBanking"]
@@ -531,7 +531,7 @@ class TestPostgreSQLDiscoverer:
         factory = _scripted_connection_factory({"analytics": boot_responses, "app_db": per_db_responses})
 
         with pytest.MonkeyPatch.context() as mp:
-            mp.setattr("inumi.execution.adapters.connections.PostgreSQLQueryExecutor", factory)
+            mp.setattr("numi.execution.adapters.connections.PostgreSQLQueryExecutor", factory)
             catalog = await PostgreSQLDiscoverer(_credentials("analytics")).discover("pg-01")
 
         assert catalog.engine_version == "16.2"
@@ -559,7 +559,7 @@ class TestPostgreSQLDiscoverer:
         factory = _scripted_connection_factory({"analytics": boot_responses, "locked_db": per_db_responses})
 
         with pytest.MonkeyPatch.context() as mp:
-            mp.setattr("inumi.execution.adapters.connections.PostgreSQLQueryExecutor", factory)
+            mp.setattr("numi.execution.adapters.connections.PostgreSQLQueryExecutor", factory)
             catalog = await PostgreSQLDiscoverer(_credentials("analytics")).discover("pg-01")
 
         assert catalog.database_names() == ["locked_db"]
@@ -613,7 +613,7 @@ class TestBuildLeastPrivilegeFinding:
 
 
 async def test_db_catalog_store_round_trips_through_the_control_db(db):
-    from inumi.gateway.infrastructure.catalog_store import DbCatalogStore
+    from numi.gateway.infrastructure.catalog_store import DbCatalogStore
 
     store = DbCatalogStore(db.session_factory)
     cat = ServerCatalog(

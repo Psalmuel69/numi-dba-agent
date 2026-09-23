@@ -29,7 +29,7 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import InvestigationState
+from numi.agent.context_manager import InvestigationState
 from tests.unit.test_orchestrator_playbooks import _FakeToolClient, _orchestrator, _state_and_investigation
 from tests.unit.test_post_remediation_verification import _KILL_EXECUTED, _kill_session_call
 

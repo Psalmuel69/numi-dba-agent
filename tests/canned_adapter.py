@@ -20,8 +20,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from inumi.common.models.execution import ExecutionRequest
-from inumi.execution.adapters.base import DatabaseAdapter
+from numi.common.models.execution import ExecutionRequest
+from numi.execution.adapters.base import DatabaseAdapter
 
 
 class CannedDatabaseAdapter(DatabaseAdapter):

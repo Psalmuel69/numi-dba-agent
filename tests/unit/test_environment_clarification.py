@@ -20,10 +20,10 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager, InvestigationState
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import AskClarification, Conclude, CritiqueVerdict, IntentExtraction
+from numi.agent.context_manager import ContextManager, InvestigationState
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import AskClarification, Conclude, CritiqueVerdict, IntentExtraction
 
 
 class _FakeToolClient:
@@ -131,7 +131,7 @@ async def test_the_fast_path_never_fires_without_a_pending_investigation():
     )
 
     assert llm.extract_intent_calls == 1
-    assert "Inumi" in reply.text
+    assert "Numi" in reply.text
 
 
 @pytest.mark.asyncio
@@ -227,7 +227,7 @@ async def test_an_unregistered_instance_still_asks_for_clarification():
 
 
 def test_the_dbas_last_message_is_threaded_into_the_llm_prompt():
-    from inumi.agent.context_manager import InvestigationState
+    from numi.agent.context_manager import InvestigationState
 
     investigation = InvestigationState(investigation_id="inv1", problem="check health")
     assert "postgres-local" not in AgentOrchestrator._problem_statement_for_llm(investigation)
@@ -420,7 +420,7 @@ class _Turn2AsksThenConcludesLLM:
     (turn 2's investigation, RESUMED by turn 3's bare reply). Deliberately
     NOT the orchestrator's own hardcoded environment-question wording —
     that string exists nowhere in any LLM prompt (verified by a grep of
-    every `src/inumi/agent/llm/*.py` system prompt) and a real model could
+    every `src/numi/agent/llm/*.py` system prompt) and a real model could
     not plausibly echo it character-for-character; this fake asks a
     plausible free-form question instead, to test the GENERAL resume
     mechanism (`investigation.last_message`), not the one hardcoded

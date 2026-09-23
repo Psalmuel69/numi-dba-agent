@@ -3,15 +3,15 @@ from __future__ import annotations
 import pytest
 import pytest_asyncio
 
-from inumi.common.config import Settings
-from inumi.common.identity import MockIdentityProvider
-from inumi.gateway.domain.catalog import InMemoryCatalogStore
-from inumi.gateway.domain.policy_engine import PolicyEngine
-from inumi.gateway.domain.rate_limiter import InMemoryRateLimitBackend, RateLimiter
-from inumi.gateway.domain.servers import ServerRegistry
-from inumi.gateway.domain.target_validation import TargetContext, TargetValidator
-from inumi.gateway.domain.tool_registry import ToolRegistry
-from inumi.gateway.infrastructure.db.session import Database
+from numi.common.config import Settings
+from numi.common.identity import MockIdentityProvider
+from numi.gateway.domain.catalog import InMemoryCatalogStore
+from numi.gateway.domain.policy_engine import PolicyEngine
+from numi.gateway.domain.rate_limiter import InMemoryRateLimitBackend, RateLimiter
+from numi.gateway.domain.servers import ServerRegistry
+from numi.gateway.domain.target_validation import TargetContext, TargetValidator
+from numi.gateway.domain.tool_registry import ToolRegistry
+from numi.gateway.infrastructure.db.session import Database
 
 
 @pytest.fixture
@@ -46,7 +46,7 @@ def make_ctx(server_registry: ServerRegistry):
     """Factory: build a TargetContext for a registered server id (+ optional
     database, honouring any per-db override)."""
 
-    from inumi.common.models.target import DatabaseTarget
+    from numi.common.models.target import DatabaseTarget
 
     def _make(server_id: str, database: str = "AppDB") -> TargetContext:
         server = server_registry.by_id(server_id)

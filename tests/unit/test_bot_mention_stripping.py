@@ -1,5 +1,5 @@
 """Reproduces a live finding: sending the exact, already-advertised
-"@Inumi DBA Agent /models" command in Slack (the ordinary way of
+"@Numi DBA Agent /models" command in Slack (the ordinary way of
 addressing the bot in a shared channel) got the WRONG reply — "Which
 environment should I investigate...?" — instead of listing models.
 
@@ -22,10 +22,10 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager, InvestigationState
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator, _strip_bot_mention_noise
-from inumi.agent.planner.actions import IntentExtraction
+from numi.agent.context_manager import ContextManager, InvestigationState
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator, _strip_bot_mention_noise
+from numi.agent.planner.actions import IntentExtraction
 
 
 class _FakeToolClient:
@@ -112,7 +112,7 @@ async def test_literal_help_with_a_leading_mention_still_matches_the_exact_comma
         message="<@U0BOTID> /help",
     )
 
-    assert "Inumi" in reply.text
+    assert "Numi" in reply.text
 
 
 @pytest.mark.asyncio
@@ -158,4 +158,4 @@ async def test_a_freeform_meta_command_still_recognized_via_the_llm_with_a_leadi
     )
 
     assert llm.seen_message == "what can you do"
-    assert "Inumi" in reply.text
+    assert "Numi" in reply.text

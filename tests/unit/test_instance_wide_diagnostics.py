@@ -24,12 +24,12 @@ import datetime as dt
 
 import pytest
 
-from inumi.common.config import Settings
-from inumi.common.models.target import DatabaseTarget, Environment
-from inumi.gateway.domain.catalog import DiscoveredDatabase, InMemoryCatalogStore, ServerCatalog
-from inumi.gateway.domain.servers import ServerRegistry
-from inumi.gateway.domain.target_validation import TargetValidator
-from inumi.gateway.domain.tool_catalog import build_tool_catalog
+from numi.common.config import Settings
+from numi.common.models.target import DatabaseTarget, Environment
+from numi.gateway.domain.catalog import DiscoveredDatabase, InMemoryCatalogStore, ServerCatalog
+from numi.gateway.domain.servers import ServerRegistry
+from numi.gateway.domain.target_validation import TargetValidator
+from numi.gateway.domain.tool_catalog import build_tool_catalog
 
 _INSTANCE_WIDE_TOOLS = {
     "database.get_health",

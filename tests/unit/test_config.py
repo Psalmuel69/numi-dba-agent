@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.config import Settings
+from numi.common.config import Settings
 
 
 def _settings(**overrides) -> Settings:
@@ -18,12 +18,12 @@ def _settings(**overrides) -> Settings:
 
 
 def test_development_settings_never_raise_regardless_of_mock_flags():
-    _settings(inumi_env="development").validate_for_production()  # should not raise
+    _settings(numi_env="development").validate_for_production()  # should not raise
 
 
 def test_production_with_all_dev_defaults_refuses_to_start():
     with pytest.raises(RuntimeError) as exc:
-        _settings(inumi_env="production").validate_for_production()
+        _settings(numi_env="production").validate_for_production()
     message = str(exc.value)
     assert "No real LLM provider is configured" in message
     assert "IDENTITY_PROVIDER=mock" in message
@@ -34,7 +34,7 @@ def test_production_with_all_dev_defaults_refuses_to_start():
 
 def test_production_with_every_flag_properly_set_does_not_raise():
     _settings(
-        inumi_env="production",
+        numi_env="production",
         anthropic_api_key="sk-ant-real-key",
         identity_provider="oidc",
         secrets_provider="vault",
@@ -46,7 +46,7 @@ def test_production_with_every_flag_properly_set_does_not_raise():
 def test_production_forced_provider_without_its_key_is_a_violation():
     with pytest.raises(RuntimeError) as exc:
         _settings(
-            inumi_env="production",
+            numi_env="production",
             llm_provider="openai",  # forced, but no OPENAI_API_KEY
             identity_provider="oidc",
             secrets_provider="vault",
@@ -59,7 +59,7 @@ def test_production_forced_provider_without_its_key_is_a_violation():
 def test_production_explicit_mock_llm_is_always_a_violation():
     with pytest.raises(RuntimeError) as exc:
         _settings(
-            inumi_env="production",
+            numi_env="production",
             llm_provider="mock",
             anthropic_api_key="sk-ant-real-key",
             identity_provider="oidc",
@@ -73,7 +73,7 @@ def test_production_explicit_mock_llm_is_always_a_violation():
 def test_production_in_memory_rate_limit_backend_is_a_violation():
     with pytest.raises(RuntimeError) as exc:
         _settings(
-            inumi_env="production",
+            numi_env="production",
             anthropic_api_key="sk-ant-real-key",
             identity_provider="oidc",
             secrets_provider="vault",

@@ -65,7 +65,7 @@ jobs:
       # FileNotFoundError — several test modules import a service's
       # `create_app` factory, and each service's `app.py` has a
       # module-level `app = create_app()` (needed so `uvicorn
-      # inumi.execution.api.app:app` etc. can actually serve it) that
+      # numi.execution.api.app:app` etc. can actually serve it) that
       # eagerly constructs `LocalDevCredentialProvider`, which reads this
       # file at construction time, not lazily. Reproduced exactly locally
       # (moving the file aside reproduces the identical "6 errors during

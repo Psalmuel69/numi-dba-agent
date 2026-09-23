@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.llm.base import StructuredLLMProvider
-from inumi.agent.llm.mock import MockLLMProvider
+from numi.agent.llm.base import StructuredLLMProvider
+from numi.agent.llm.mock import MockLLMProvider
 
 
 class _CapturingProvider(StructuredLLMProvider):

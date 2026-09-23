@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import datetime as dt
 
-from inumi.common.models.identity import DBARole
-from inumi.common.models.target import Environment
-from inumi.gateway.domain.policy_engine import PolicyDecision
+from numi.common.models.identity import DBARole
+from numi.common.models.target import Environment
+from numi.gateway.domain.policy_engine import PolicyDecision
 
 
 def test_fails_closed_for_unlisted_tool(policy_engine, tool_registry, make_ctx):

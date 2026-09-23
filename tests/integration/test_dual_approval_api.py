@@ -15,10 +15,10 @@ from __future__ import annotations
 import httpx
 from fastapi.testclient import TestClient
 
-from inumi.common.config import Settings
-from inumi.common.service_auth import ServiceTokenIssuer
-from inumi.execution.api.app import create_app as create_execution_app
-from inumi.gateway.api.app import create_app as create_gateway_app
+from numi.common.config import Settings
+from numi.common.service_auth import ServiceTokenIssuer
+from numi.execution.api.app import create_app as create_execution_app
+from numi.gateway.api.app import create_app as create_gateway_app
 from tests.canned_adapter import canned_adapter_factory
 
 
@@ -27,7 +27,7 @@ def _settings() -> Settings:
         _env_file=None,
         control_db_url="sqlite+aiosqlite:///:memory:",
         service_jwt_secret="test-secret",
-        service_jwt_issuer="inumi-internal",
+        service_jwt_issuer="numi-internal",
     )
 
 
@@ -37,7 +37,7 @@ def _build():
     execution_transport = httpx.ASGITransport(app=execution_app)
     gateway_app = create_gateway_app(settings, execution_transport=execution_transport)
     issuer = ServiceTokenIssuer(settings.service_jwt_secret, settings.service_jwt_issuer)
-    token = issuer.issue(service_name="agent", audience="inumi-gateway")
+    token = issuer.issue(service_name="agent", audience="numi-gateway")
     return gateway_app, token
 
 

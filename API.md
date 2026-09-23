@@ -7,8 +7,8 @@ All four services are FastAPI apps; each exposes interactive OpenAPI docs at
 Every endpoint below except health/ready checks and the Slack/Teams webhook
 signature/token verification requires a signed service token in the
 `X-Service-Token` header (`common/service_auth.py`), scoped to the
-receiving service's audience (`inumi-gateway`, `inumi-execution`,
-`inumi-agent`).
+receiving service's audience (`numi-gateway`, `numi-execution`,
+`numi-agent`).
 
 ## Gateway (`gateway/api/app.py`) — default port 8001
 
@@ -106,7 +106,7 @@ otherwise). `404` if the server id is not registered.
 
 ### `POST /v1/execute`
 
-Only callable by the Gateway (audience `inumi-execution`). Body:
+Only callable by the Gateway (audience `numi-execution`). Body:
 `ExecutionRequest`; response: `ExecutionResult`. Never exposed to any other
 service or to the public internet in a real deployment (spec §30).
 
@@ -139,7 +139,7 @@ approval endpoints and resubmits the original tool call on success.
 
 Internal — called by Channels' `/webhooks/alerts` after it verifies the
 external monitoring system's signature, with a service token audience
-`inumi-agent` (same as `/v1/chat`). Body:
+`numi-agent` (same as `/v1/chat`). Body:
 `{server, metric?, current_value?, threshold?, severity?, source?, message?}`.
 Runs one freeform, read-only investigation
 (`orchestrator.run_triggered_investigation` — see ARCHITECTURE.md's
@@ -175,7 +175,7 @@ routes both plain messages and Adaptive Card `Action.Submit` payloads
 
 An external monitoring system (Prometheus Alertmanager, Datadog, a cloud
 provider's own alarms, ...) reporting a threshold breach. Verifies
-`X-Inumi-Alert-Signature`/`X-Inumi-Alert-Timestamp`
+`X-Numi-Alert-Signature`/`X-Numi-Alert-Timestamp`
 (`channels/alerts/signature.py` — same HMAC-over-timestamp-bound-body shape
 as the Slack signature above); an unset `ALERT_WEBHOOK_SECRET` refuses
 every request. Body: `{server, metric?, current_value?, threshold?,
@@ -192,7 +192,7 @@ not to "the server name in a well-formed alert didn't match anything."
 The one Agent-initiated (outbound) path on this service: delivers an
 unsolicited message to a channel. Today that is only the scheduled daily
 health digest (`agent/scheduled_report.py`). Requires a service token with
-audience `inumi-channels`; body `{channel_id, text}`.
+audience `numi-channels`; body `{channel_id, text}`.
 
 Deliberately minimal — no identity, no `approval_id`, no conversation. It
 posts text and nothing else, and the reply it renders never carries an

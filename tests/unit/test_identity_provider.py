@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.identity.provider import MockIdentityProvider
+from numi.common.identity.provider import MockIdentityProvider
 
 _BASE_IDENTITY_YAML = """
 identity:

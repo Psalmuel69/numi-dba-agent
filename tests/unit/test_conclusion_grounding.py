@@ -14,8 +14,8 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.orchestrator import _ungrounded_identifiers
-from inumi.agent.planner.actions import Conclude
+from numi.agent.orchestrator import _ungrounded_identifiers
+from numi.agent.planner.actions import Conclude
 from tests.unit.test_orchestrator_playbooks import (
     _ALL_READ_TOOL_IDS,
     _FakeLLM,
@@ -26,7 +26,7 @@ from tests.unit.test_orchestrator_playbooks import (
 
 
 def _investigation_with(*, transcript=None, problem="check CoreBanking", evidence=None):
-    from inumi.agent.context_manager import InvestigationState
+    from numi.agent.context_manager import InvestigationState
 
     return InvestigationState(
         investigation_id="inv1",

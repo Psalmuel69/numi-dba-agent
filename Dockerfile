@@ -37,17 +37,17 @@ ARG SERVICE=gateway
 ENV SERVICE=${SERVICE}
 
 # Non-root runtime user.
-RUN useradd --create-home --uid 10001 inumi
-USER inumi
+RUN useradd --create-home --uid 10001 numi
+USER numi
 
 EXPOSE 8000 8001 8002 8003
 
 CMD ["sh", "-c", "\
     case \"$SERVICE\" in \
-      gateway)   exec uvicorn inumi.gateway.api.app:app --host 0.0.0.0 --port ${GATEWAY_PORT:-8001} ;; \
-      execution) exec uvicorn inumi.execution.api.app:app --host 0.0.0.0 --port ${EXECUTION_PORT:-8002} ;; \
-      agent)     exec uvicorn inumi.agent.api.app:app --host 0.0.0.0 --port ${AGENT_PORT:-8000} ;; \
-      channels)  exec uvicorn inumi.channels.api.app:app --host 0.0.0.0 --port ${CHANNELS_PORT:-8003} ;; \
+      gateway)   exec uvicorn numi.gateway.api.app:app --host 0.0.0.0 --port ${GATEWAY_PORT:-8001} ;; \
+      execution) exec uvicorn numi.execution.api.app:app --host 0.0.0.0 --port ${EXECUTION_PORT:-8002} ;; \
+      agent)     exec uvicorn numi.agent.api.app:app --host 0.0.0.0 --port ${AGENT_PORT:-8000} ;; \
+      channels)  exec uvicorn numi.channels.api.app:app --host 0.0.0.0 --port ${CHANNELS_PORT:-8003} ;; \
       *) echo \"Unknown SERVICE '$SERVICE'\"; exit 1 ;; \
     esac \
 "]

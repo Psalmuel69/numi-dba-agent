@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.llm.mock import MockLLMProvider
+from numi.agent.llm.mock import MockLLMProvider
 
 
 @pytest.mark.asyncio

@@ -4,9 +4,9 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from inumi.execution.adapters.mysql import MySQLAdapter
-from inumi.execution.adapters.postgresql import PostgreSQLAdapter
-from inumi.execution.adapters.sqlserver import SQLServerAdapter
+from numi.execution.adapters.mysql import MySQLAdapter
+from numi.execution.adapters.postgresql import PostgreSQLAdapter
+from numi.execution.adapters.sqlserver import SQLServerAdapter
 from tests.fakes import FakeQueryExecutor
 
 

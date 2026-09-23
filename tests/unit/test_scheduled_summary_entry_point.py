@@ -14,14 +14,14 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import Conclude, CritiqueVerdict
-from inumi.agent.playbooks.library import get_playbook
-from inumi.common.config import Settings
-from inumi.common.models.tool import ToolCallResponse, ToolCallStatus
-from inumi.gateway.domain.tool_catalog import build_tool_catalog
+from numi.agent.context_manager import ContextManager
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import Conclude, CritiqueVerdict
+from numi.agent.playbooks.library import get_playbook
+from numi.common.config import Settings
+from numi.common.models.tool import ToolCallResponse, ToolCallStatus
+from numi.gateway.domain.tool_catalog import build_tool_catalog
 
 # The real, production tool catalog — including each tool's real
 # `operation_type`. Deliberately not a hand-written list of fake

@@ -7,9 +7,9 @@ ordinary non-matching problem text to the existing freeform path (None)."""
 
 from __future__ import annotations
 
-from inumi.agent.playbooks.library import PLAYBOOKS, get_playbook, match_playbook
-from inumi.common.config import Settings
-from inumi.gateway.domain.tool_catalog import build_tool_catalog
+from numi.agent.playbooks.library import PLAYBOOKS, get_playbook, match_playbook
+from numi.common.config import Settings
+from numi.gateway.domain.tool_catalog import build_tool_catalog
 
 # The real, currently registered read-only tool ids (spec §8) — a playbook
 # step naming anything outside this set (or a write tool) could never
@@ -176,7 +176,7 @@ def test_configuration_review_guidance_scopes_itself_honestly_and_names_engine_p
     guidance = playbook.conclusion_guidance
     description = playbook.description
     # Must not overclaim true capacity-based sizing (no instance-class /
-    # hardware data exists anywhere in Inumi's server registry).
+    # hardware data exists anywhere in Numi's server registry).
     assert "capacity" in guidance
     assert "hardware" in guidance or "instance-class" in guidance
     # Must name real, engine-specific parameters, adapted per engine.

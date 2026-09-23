@@ -14,10 +14,10 @@ import pytest
 import pytest_asyncio
 from sqlalchemy import select
 
-from inumi.common.models.catalog import ServerCatalog
-from inumi.gateway.infrastructure.catalog_store import DbCatalogStore
-from inumi.gateway.infrastructure.db.models import ServerCatalogRecord
-from inumi.gateway.infrastructure.db.session import Database
+from numi.common.models.catalog import ServerCatalog
+from numi.gateway.infrastructure.catalog_store import DbCatalogStore
+from numi.gateway.infrastructure.db.models import ServerCatalogRecord
+from numi.gateway.infrastructure.db.session import Database
 
 
 @pytest_asyncio.fixture

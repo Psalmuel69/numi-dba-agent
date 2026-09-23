@@ -15,8 +15,8 @@ from typing import Any
 
 import pytest
 
-from inumi.agent.llm.base import StructuredLLMProvider
-from inumi.agent.planner.actions import (
+from numi.agent.llm.base import StructuredLLMProvider
+from numi.agent.planner.actions import (
     AskClarification,
     CritiqueVerdict,
     IntentExtraction,

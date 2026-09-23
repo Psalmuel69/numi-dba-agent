@@ -10,8 +10,8 @@ import datetime as dt
 import pytest
 import pytest_asyncio
 
-from inumi.gateway.domain.decision_events import DbDecisionEventStore
-from inumi.gateway.infrastructure.db.session import Database
+from numi.gateway.domain.decision_events import DbDecisionEventStore
+from numi.gateway.infrastructure.db.session import Database
 
 
 @pytest_asyncio.fixture
@@ -61,7 +61,7 @@ async def test_counts_by_type_excludes_events_before_the_since_cutoff(database):
 async def test_append_persists_optional_fields(database):
     from sqlalchemy import select
 
-    from inumi.gateway.infrastructure.db.models import LlmDecisionEventRecord
+    from numi.gateway.infrastructure.db.models import LlmDecisionEventRecord
 
     store = DbDecisionEventStore(database.session_factory)
     await store.append(

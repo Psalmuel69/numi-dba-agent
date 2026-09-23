@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from inumi.gateway.domain.data_policy import (
+from numi.gateway.domain.data_policy import (
     DEFAULT_SENSITIVE_FIELD_PATTERNS,
     DataMinimizer,
     DataPolicyConfig,

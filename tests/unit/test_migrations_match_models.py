@@ -18,7 +18,7 @@ from pathlib import Path
 
 from sqlalchemy import create_engine, inspect
 
-from inumi.gateway.infrastructure.db.models import Base
+from numi.gateway.infrastructure.db.models import Base
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 

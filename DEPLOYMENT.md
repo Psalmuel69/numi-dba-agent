@@ -46,7 +46,7 @@ of that change is contained.
 `docker-compose.yml` passes it through as `${SERVICE_JWT_SECRET:-dev-only-change-me-in-production}`
 — set a real, unique value in your production environment/secret store
 before deploying; `validate_for_production()` refuses to boot with
-`INUMI_ENV=production` while the placeholder default is still active, so a
+`NUMI_ENV=production` while the placeholder default is still active, so a
 forgotten override fails at startup rather than running insecurely.
 
 ## Identity provider
@@ -62,7 +62,7 @@ that constructs it.
 A channel whose attribute isn't configured resolves to nobody, by design,
 so populate those attributes at directory-sync time before cutover. Never
 ship `MockIdentityProvider` to production — it is deliberately
-config-driven and is not an authentication mechanism; `INUMI_ENV=production`
+config-driven and is not an authentication mechanism; `NUMI_ENV=production`
 refuses to start on it.
 
 ## Secrets manager
@@ -78,15 +78,15 @@ each is imported lazily by its own provider.
 Store one secret per registered server id, containing the same JSON object
 `config/dev_credentials.yaml` holds per entry (`host`, `port`, `username`,
 `password`, `database`, optional `options`), under that backend's naming
-convention — `secret/inumi/db/<id>` (Vault KV v2), `inumi/db/<id>` (AWS),
-`inumi-db-<id>` (Azure, GCP). Each provider's class docstring in
+convention — `secret/numi/db/<id>` (Vault KV v2), `numi/db/<id>` (AWS),
+`numi-db-<id>` (Azure, GCP). Each provider's class docstring in
 `execution/credentials/provider.py` carries the exact `vault kv put` /
 `aws secretsmanager create-secret` / `az keyvault secret set` /
 `gcloud secrets create` invocation.
 
 Cloud auth uses the platform's ambient credential chain (instance/task
-role, managed identity, ADC) — Inumi never holds a cloud access key. Scope
-it tightly: `secretsmanager:GetSecretValue` on `inumi/db/*`, the
+role, managed identity, ADC) — Numi never holds a cloud access key. Scope
+it tightly: `secretsmanager:GetSecretValue` on `numi/db/*`, the
 `Key Vault Secrets User` role on that one vault, or
 `roles/secretmanager.secretAccessor`.
 
@@ -134,7 +134,7 @@ that key can actually use.
 ## Production startup checks (fail closed, enforced — not just documented)
 
 Every service's `create_app()` calls `Settings.validate_for_production()`
-(`common/config.py`) before it does anything else. With `INUMI_ENV=production`,
+(`common/config.py`) before it does anything else. With `NUMI_ENV=production`,
 the process **refuses to start** — raises `RuntimeError` immediately,
 rather than serving traffic in a weakened mode — if any of the following
 development-only defaults are still set:
@@ -146,8 +146,8 @@ development-only defaults are still set:
 - `SERVICE_JWT_SECRET` still equal to the shipped development placeholder
 
 This is deliberately a hard crash-on-boot, not a warning log — an operator
-who forgets to flip one of these in `INUMI_ENV=development` (the default)
-is unaffected either way; setting `INUMI_ENV=production` is the trigger.
+who forgets to flip one of these in `NUMI_ENV=development` (the default)
+is unaffected either way; setting `NUMI_ENV=production` is the trigger.
 See `tests/unit/test_config.py` for the coverage of this check.
 
 ## Observability

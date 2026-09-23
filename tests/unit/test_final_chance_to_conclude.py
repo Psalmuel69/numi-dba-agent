@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.planner.actions import AskClarification, Conclude, ProposeToolCall
+from numi.agent.planner.actions import AskClarification, Conclude, ProposeToolCall
 from tests.unit.test_orchestrator_playbooks import (
     _ALL_READ_TOOL_IDS,
     _FakeLLM,

@@ -11,15 +11,15 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.alert_trigger import (
+from numi.agent.alert_trigger import (
     AlertPayload,
     AlertTriggerRunner,
     build_problem_statement,
     resolve_server,
 )
-from inumi.agent.orchestrator import ScheduledSummary
-from inumi.common.config import Settings
-from inumi.common.rate_limit_backend import InMemoryRateLimitBackend, RedisRateLimitBackend
+from numi.agent.orchestrator import ScheduledSummary
+from numi.common.config import Settings
+from numi.common.rate_limit_backend import InMemoryRateLimitBackend, RedisRateLimitBackend
 
 # --------------------------------------------------------------- resolve_server ---
 
@@ -368,7 +368,7 @@ async def test_cooldown_zero_disables_suppression_entirely():
 
 @pytest.mark.asyncio
 async def test_cooldown_expires_after_the_configured_window():
-    import inumi.common.rate_limit_backend as backend_module
+    import numi.common.rate_limit_backend as backend_module
 
     servers = [{"id": "postgres-dev-02", "environment": "development"}]
     orchestrator = _FakeOrchestrator(servers=servers, summary=_ok_summary())
@@ -424,13 +424,13 @@ async def test_a_suppressed_alert_never_reaches_the_orchestrator_or_publisher():
 def test_cooldown_defaults_to_in_memory_backend():
     """Mirrors `test_gateway_defaults_to_in_memory_backend` in
     test_rate_limiter.py — same setting, same reasoning."""
-    from inumi.agent.alert_trigger import _build_cooldown_backend
+    from numi.agent.alert_trigger import _build_cooldown_backend
 
     assert isinstance(_build_cooldown_backend(_settings()), InMemoryRateLimitBackend)
 
 
 def test_cooldown_uses_redis_backend_when_configured():
-    from inumi.agent.alert_trigger import _build_cooldown_backend
+    from numi.agent.alert_trigger import _build_cooldown_backend
 
     backend = _build_cooldown_backend(_settings(rate_limit_backend="redis"))
     assert isinstance(backend, RedisRateLimitBackend)

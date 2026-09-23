@@ -11,7 +11,7 @@
   manager under the same server id. The Gateway discovers the databases,
   tables, indexes and extensions on that server automatically (on first use,
   on `/discover`, or eagerly at startup with
-  `INUMI_DISCOVERY_ON_STARTUP=true`); individual databases are never
+  `NUMI_DISCOVERY_ON_STARTUP=true`); individual databases are never
   registered by hand. The Agent selects targets from the registry + the
   discovered catalog, never from a freehand connection string (spec §11).
   Discovery reads catalog and statistics views only — never table contents.
@@ -33,7 +33,7 @@
 
 ## Enabling the daily health digest
 
-Once a day, Inumi can sweep every registered server with the
+Once a day, Numi can sweep every registered server with the
 `comprehensive_summary` playbook and post one combined digest to a channel.
 It is **off by default**, and the destination channel is the only switch:
 with `DAILY_REPORT_SLACK_CHANNEL` unset, no scheduler is created and no job
@@ -78,7 +78,7 @@ then a single closing line naming everything that came back clean. The
 header always states both numbers ("6 servers swept: 4 checked, 2 could not
 be checked") — if servers are consistently landing in the second group,
 that's an availability/credential/discovery problem worth chasing, not a
-digest problem. A line reading "Inumi would have proposed
+digest problem. A line reading "Numi would have proposed
 `database.kill_session` here" means the agent identified a remediation and
 was structurally prevented from taking it; it is a recommendation for you,
 never something that happened.
@@ -92,7 +92,7 @@ is no job store, so there is no stale schedule to clean up.
 
 The event-driven sibling of the digest above: point your monitoring system
 (Prometheus Alertmanager, Datadog, a cloud provider's own alarms, ...) at
-`POST https://<channels-host>/webhooks/alerts`, and Inumi investigates the
+`POST https://<channels-host>/webhooks/alerts`, and Numi investigates the
 specific breach it reports instead of waiting for the next scheduled sweep.
 **Off by default**, with two independent switches — one per service:
 
@@ -112,8 +112,8 @@ punctuation-insensitive — an unmatched or ambiguous name is reported back as
 monitoring system has — they become the investigation's opening problem
 statement, so a specific symptom drives what actually gets checked, unlike
 the digest's fixed checklist. An optional `alert_id` deduplicates a retried
-delivery. Sign the request: `X-Inumi-Alert-Timestamp` (Unix seconds) and
-`X-Inumi-Alert-Signature: sha256=<hmac>` computed over
+delivery. Sign the request: `X-Numi-Alert-Timestamp` (Unix seconds) and
+`X-Numi-Alert-Signature: sha256=<hmac>` computed over
 `f"{timestamp}.{raw_body}"` with `ALERT_WEBHOOK_SECRET` — see
 `channels/alerts/signature.py`.
 

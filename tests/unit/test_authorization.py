@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.models.failures import FailureCode, InumiError
-from inumi.common.models.identity import DBARole
-from inumi.gateway.domain.authorization import authorize
+from numi.common.models.failures import FailureCode, NumiError
+from numi.common.models.identity import DBARole
+from numi.gateway.domain.authorization import authorize
 
 
 async def test_non_dba_is_unauthorized(tool_registry, make_ctx, identity_provider):
     identity = await identity_provider.resolve_by_external_account("slack", "U_MOCK_NONDBA")
     tool = tool_registry.get("database.get_health")
-    with pytest.raises(InumiError) as exc:
+    with pytest.raises(NumiError) as exc:
         authorize(identity, tool, make_ctx("corebanking-sqlserver-prod"))
     assert exc.value.code == FailureCode.UNAUTHORIZED
 
@@ -20,7 +20,7 @@ async def test_dba_l1_cannot_touch_server_restricted_to_l2_plus(
 ):
     identity = await identity_provider.resolve_by_external_account("slack", "U_MOCK_L1")
     tool = tool_registry.get("database.get_health")  # tool itself allows L1
-    with pytest.raises(InumiError) as exc:
+    with pytest.raises(NumiError) as exc:
         authorize(identity, tool, make_ctx("corebanking-sqlserver-prod"))  # server requires L2/L3
     assert exc.value.code == FailureCode.UNAUTHORIZED
 
@@ -41,7 +41,7 @@ async def test_per_database_override_relaxes_a_locked_down_server(
     unless it says so, so this still requires L2+."""
     identity = await identity_provider.resolve_by_external_account("slack", "U_MOCK_L1")
     tool = tool_registry.get("database.get_health")
-    with pytest.raises(InumiError):
+    with pytest.raises(NumiError):
         authorize(identity, tool, make_ctx("corebanking-sqlserver-prod", database="master"))
 
 
@@ -53,6 +53,6 @@ async def test_natural_language_role_claims_are_never_trusted(
     identity = await identity_provider.resolve_by_external_account("slack", "U_MOCK_L1")
     assert identity.dba_roles == [DBARole.DBA_L1]
     tool = tool_registry.get("database.restart_instance")
-    with pytest.raises(InumiError) as exc:
+    with pytest.raises(NumiError) as exc:
         authorize(identity, tool, make_ctx("sqlserver-dev-01"))
     assert exc.value.code == FailureCode.UNAUTHORIZED

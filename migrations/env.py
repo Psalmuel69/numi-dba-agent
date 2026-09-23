@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from inumi.gateway.infrastructure.db.models import Base  # noqa: E402
+from numi.gateway.infrastructure.db.models import Base  # noqa: E402
 
 config = context.config
 

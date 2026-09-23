@@ -15,8 +15,8 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from inumi.agent.scheduled_report import DAILY_DIGEST_JOB_ID, schedule_daily_digest
-from inumi.common.config import Settings
+from numi.agent.scheduled_report import DAILY_DIGEST_JOB_ID, schedule_daily_digest
+from numi.common.config import Settings
 
 
 class _UnusedRunner:

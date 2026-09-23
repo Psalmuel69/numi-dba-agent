@@ -7,7 +7,7 @@ import hmac
 
 import pytest
 
-from inumi.channels.alerts.signature import AlertSignatureError, verify_alert_signature
+from numi.channels.alerts.signature import AlertSignatureError, verify_alert_signature
 
 SECRET = "a-real-webhook-secret"
 BODY = b'{"server": "winpg", "metric": "replication_lag_seconds"}'

@@ -25,9 +25,9 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.orchestrator import _verification_still_shows_condition
-from inumi.agent.planner.actions import Conclude, ProposeToolCall
-from inumi.common.models.tool import OperationType, ToolCallResponse, ToolCallStatus
+from numi.agent.orchestrator import _verification_still_shows_condition
+from numi.agent.planner.actions import Conclude, ProposeToolCall
+from numi.common.models.tool import OperationType, ToolCallResponse, ToolCallStatus
 from tests.unit.test_orchestrator_playbooks import (
     _ALL_READ_TOOL_IDS,
     _FakeLLM,

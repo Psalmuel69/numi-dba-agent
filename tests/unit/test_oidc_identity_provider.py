@@ -19,10 +19,10 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.identity.factory import build_identity_provider
-from inumi.common.identity.oidc_provider import OIDCIdentityProvider, _scim_string_literal
-from inumi.common.identity.provider import MockIdentityProvider
-from inumi.common.models.failures import InumiError
+from numi.common.identity.factory import build_identity_provider
+from numi.common.identity.oidc_provider import OIDCIdentityProvider, _scim_string_literal
+from numi.common.identity.provider import MockIdentityProvider
+from numi.common.models.failures import NumiError
 
 _IDENTITY_YAML = """
 identity:
@@ -40,7 +40,7 @@ identity:
 oidc:
   directory_endpoint: "https://idp.example.test/scim/v2/Users"
   channel_attributes:
-    slack: "urn:inumi:slackUserId"
+    slack: "urn:numi:slackUserId"
     teams: "externalId"
   groups_attribute: "groups"
   mfa_attribute: "mfaEnrolled"
@@ -123,7 +123,7 @@ def identity_config(tmp_path):
 def _provider(identity_config, http_client) -> OIDCIdentityProvider:
     return OIDCIdentityProvider(
         issuer=_ISSUER,
-        client_id="inumi-gateway",
+        client_id="numi-gateway",
         client_secret="shhh",
         identity_config_path=identity_config,
         http_client=http_client,
@@ -170,7 +170,7 @@ async def test_the_scim_query_filters_on_the_configured_channel_attribute(identi
 
     call = http.directory_get_calls[0]
     assert call["url"] == "https://idp.example.test/scim/v2/Users"
-    assert call["params"]["filter"] == 'urn:inumi:slackUserId eq "U012ABC"'
+    assert call["params"]["filter"] == 'urn:numi:slackUserId eq "U012ABC"'
     assert call["headers"]["Authorization"] == "Bearer svc-token-abc"
 
 
@@ -195,7 +195,7 @@ async def test_the_client_credentials_token_is_requested_from_the_discovered_end
 
     assert http.post_calls[0]["url"] == _DISCOVERY["token_endpoint"]
     assert http.post_calls[0]["data"]["grant_type"] == "client_credentials"
-    assert http.post_calls[0]["data"]["client_id"] == "inumi-gateway"
+    assert http.post_calls[0]["data"]["client_id"] == "numi-gateway"
     assert http.post_calls[0]["data"]["scope"] == "scim:read"
 
 
@@ -366,7 +366,7 @@ async def test_a_crafted_account_id_cannot_break_out_of_the_filter(identity_conf
 
     sent = http.directory_get_calls[0]["params"]["filter"]
     # Exactly one unescaped quote pair remains — the one this code wrote.
-    assert sent == 'urn:inumi:slackUserId eq "U0\\" or userName pr or \\""'
+    assert sent == 'urn:numi:slackUserId eq "U0\\" or userName pr or \\""'
 
 
 # --------------------------------------------------------------------------- #
@@ -435,7 +435,7 @@ async def test_refresh_returns_none_on_an_idp_error_rather_than_raising(identity
 
 @pytest.mark.asyncio
 async def test_the_service_token_is_reused_across_lookups(identity_config):
-    """Inumi's *own* client-credentials token is cached (it authenticates
+    """Numi's *own* client-credentials token is cached (it authenticates
     the service, not the user); the user's groups are not, as the test
     above pins."""
     http = _FakeHTTPClient([_found(), _FakeResponse(200, dict(_SCIM_USER))])
@@ -454,7 +454,7 @@ async def test_the_service_token_is_reused_across_lookups(identity_config):
 
 
 def _settings(**overrides):
-    from inumi.common.config import Settings
+    from numi.common.config import Settings
 
     return Settings(_env_file=None, **overrides)
 
@@ -473,7 +473,7 @@ def test_build_identity_provider_routes_to_the_real_oidc_class():
         _settings(
             identity_provider="oidc",
             oidc_issuer=_ISSUER,
-            oidc_client_id="inumi-gateway",
+            oidc_client_id="numi-gateway",
             oidc_client_secret="shhh",
         )
     )
@@ -481,7 +481,7 @@ def test_build_identity_provider_routes_to_the_real_oidc_class():
 
 
 def test_build_identity_provider_refuses_oidc_without_an_issuer():
-    with pytest.raises(InumiError) as exc_info:
+    with pytest.raises(NumiError) as exc_info:
         build_identity_provider(_settings(identity_provider="oidc"))
     assert "OIDC_ISSUER" in exc_info.value.detail
 
@@ -489,7 +489,7 @@ def test_build_identity_provider_refuses_oidc_without_an_issuer():
 def test_build_identity_provider_rejects_an_unknown_name():
     """A typo must never silently fall back to the fictitious mock
     directory."""
-    with pytest.raises(InumiError):
+    with pytest.raises(NumiError):
         build_identity_provider(_settings(identity_provider="okta-ish"))
 
 

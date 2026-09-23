@@ -39,16 +39,16 @@ from __future__ import annotations
 
 import httpx
 
-from inumi.agent.context_manager import ContextManager
-from inumi.agent.llm.base import LLMProvider
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import AgentAction, Conclude, IntentExtraction, ProposeToolCall
-from inumi.agent.tool_client import ToolClient
-from inumi.common.config import Settings
-from inumi.common.service_auth import ServiceTokenIssuer
-from inumi.execution.api.app import create_app as create_execution_app
-from inumi.gateway.api.app import create_app as create_gateway_app
+from numi.agent.context_manager import ContextManager
+from numi.agent.llm.base import LLMProvider
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import AgentAction, Conclude, IntentExtraction, ProposeToolCall
+from numi.agent.tool_client import ToolClient
+from numi.common.config import Settings
+from numi.common.service_auth import ServiceTokenIssuer
+from numi.execution.api.app import create_app as create_execution_app
+from numi.gateway.api.app import create_app as create_gateway_app
 from tests.canned_adapter import canned_adapter_factory
 
 
@@ -57,7 +57,7 @@ def _settings() -> Settings:
         _env_file=None,
         control_db_url="sqlite+aiosqlite:///:memory:",
         service_jwt_secret="test-secret",
-        service_jwt_issuer="inumi-internal",
+        service_jwt_issuer="numi-internal",
         llm_provider="mock",
     )
 

@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.llm.mock import MockLLMProvider
-from inumi.agent.planner.actions import Conclude, CritiqueVerdict
-from inumi.common.config import get_settings
+from numi.agent.llm.mock import MockLLMProvider
+from numi.agent.planner.actions import Conclude, CritiqueVerdict
+from numi.common.config import get_settings
 from tests.unit.test_orchestrator_playbooks import (
     _ALL_READ_TOOL_IDS,
     _FakeToolClient,

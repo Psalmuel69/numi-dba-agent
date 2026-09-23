@@ -18,13 +18,13 @@ import httpx
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from inumi.agent.api.app import create_app as create_agent_app
-from inumi.channels.api.app import _slack_conversation_id
-from inumi.channels.api.app import create_app as create_channels_app
-from inumi.channels.slack.sender import SlackMessageSender
-from inumi.common.config import Settings
-from inumi.execution.api.app import create_app as create_execution_app
-from inumi.gateway.api.app import create_app as create_gateway_app
+from numi.agent.api.app import create_app as create_agent_app
+from numi.channels.api.app import _slack_conversation_id
+from numi.channels.api.app import create_app as create_channels_app
+from numi.channels.slack.sender import SlackMessageSender
+from numi.common.config import Settings
+from numi.execution.api.app import create_app as create_execution_app
+from numi.gateway.api.app import create_app as create_gateway_app
 from tests.canned_adapter import canned_adapter_factory
 
 
@@ -33,7 +33,7 @@ def _settings(**overrides) -> Settings:
         _env_file=None,
         control_db_url="sqlite+aiosqlite:///:memory:",
         service_jwt_secret="test-secret",
-        service_jwt_issuer="inumi-internal",
+        service_jwt_issuer="numi-internal",
         llm_provider="mock",
         slack_signing_secret="test-slack-signing-secret",
         teams_app_password="dev-teams-shared-token",
@@ -471,7 +471,7 @@ def test_slack_interactive_button_click_resolves_to_the_same_conversation_as_the
             "user": {"id": "U_MOCK_L2"},
             "channel": {"id": "C123"},
             "container": {"type": "message", "message_ts": "300.999", "channel_id": "C123"},
-            "actions": [{"action_id": "inumi_approve", "value": "appr-123"}],
+            "actions": [{"action_id": "numi_approve", "value": "appr-123"}],
         }
     )
 
@@ -560,7 +560,7 @@ def test_slack_approval_card_button_click_actually_resolves_the_pending_approval
                     "message_ts": "400.777",
                     "channel_id": "C_APPROVAL",
                 },
-                "actions": [{"action_id": "inumi_approve", "value": approval_id}],
+                "actions": [{"action_id": "numi_approve", "value": approval_id}],
             }
         )
         interactive_response = client.post(
@@ -581,7 +581,7 @@ def test_slack_approval_card_buttons_collapse_after_a_decision_is_clicked(monkey
     rewrote the original message. `slack_interactive` must call
     `SlackMessageSender.update_message` (`chat.update`) against the SAME
     message (`payload["message"]["ts"]`, Slack's own echo of the card being
-    acted on) with the `actions` block (matched by its `inumi_approval_*`
+    acted on) with the `actions` block (matched by its `numi_approval_*`
     block_id) replaced by a static resolved line -- proof the buttons are
     actually gone, not merely that the approval itself resolved (already
     covered above)."""
@@ -642,7 +642,7 @@ def test_slack_approval_card_buttons_collapse_after_a_decision_is_clicked(monkey
                     "channel_id": "C_COLLAPSE",
                 },
                 "message": {"ts": "500.777", "blocks": card_blocks, "text": _text},
-                "actions": [{"action_id": "inumi_reject", "value": approval_id}],
+                "actions": [{"action_id": "numi_reject", "value": approval_id}],
             }
         )
         interactive_response = client.post(
@@ -750,7 +750,7 @@ def test_slack_approval_card_buttons_stay_live_after_a_failed_decision(monkeypat
                 "channel": {"id": "C_SOD"},
                 "container": {"type": "message", "message_ts": "600.777", "channel_id": "C_SOD"},
                 "message": {"ts": "600.777", "blocks": card_blocks, "text": _text},
-                "actions": [{"action_id": "inumi_approve", "value": "appr-sod-1"}],
+                "actions": [{"action_id": "numi_approve", "value": "appr-sod-1"}],
             }
         )
         interactive_response = client.post(

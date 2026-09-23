@@ -1,8 +1,8 @@
-# Inumi — Enterprise AI DBA Agent & Secure DBA Control Gateway
+# Numi — Enterprise AI DBA Agent & Secure DBA Control Gateway
 
-[![CI](https://github.com/Psalmuel69/inumi-dba-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Psalmuel69/inumi-dba-agent/actions/workflows/ci.yml)
+[![CI](https://github.com/Psalmuel69/numi-dba-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Psalmuel69/numi-dba-agent/actions/workflows/ci.yml)
 
-**Inumi** (`@Inumi`) is an AI database administration assistant that DBA teams talk
+**Numi** (`@Numi`) is an AI database administration assistant that DBA teams talk
 to over Slack and Microsoft Teams. It investigates incidents, gathers the
 evidence itself, analyzes performance, and — only through a fully
 independent, non-bypassable **DBA Control Gateway** — executes approved
@@ -80,7 +80,7 @@ curl -X POST http://localhost:8003/dev/chat \
 **Registering databases.** You don't register individual databases. Register each *server* in
 `config/servers.yaml` (host, environment, criticality, allowed roles,
 maintenance window, per-database overrides) and store its diagnostic
-credential in the secrets manager under the same id. Inumi discovers the
+credential in the secrets manager under the same id. Numi discovers the
 databases, tables, indexes and extensions on that server itself — reading
 catalog and statistics views only, never table or view contents. Ask it
 `/servers`, `/catalog <server>`, or `/discover` in chat.
@@ -90,7 +90,7 @@ catalog and statistics views only, never table or view contents. Ask it
 `ANTHROPIC_API_KEY=sk-ant-... docker compose up`). Each configured provider
 becomes selectable in chat with `/models` and `/model <provider> <model>`.
 With no key set, the agent uses a deterministic offline planner. If your
-provider has a bad moment, Inumi retries, then tries a different model,
+provider has a bad moment, Numi retries, then tries a different model,
 then — if you've configured more than one provider — a different vendor
 entirely, and always says so plainly rather than going quiet. A single
 investigative decision is never worse than ~20s late no matter how many
@@ -111,7 +111,7 @@ for how and why.
 
 **Daily digest (proactive, and structurally read-only).** Set
 `DAILY_REPORT_SLACK_CHANNEL` and, once a day at `DAILY_REPORT_HOUR_UTC`,
-Inumi sweeps every registered server with `comprehensive_summary` and posts
+Numi sweeps every registered server with `comprehensive_summary` and posts
 one combined digest — organized by server, calling out only deviations, and
 reporting any server it *couldn't* check as exactly that rather than
 silently dropping it. Unset (the default) means no scheduler and no
@@ -125,7 +125,7 @@ for how that's enforced and [OPERATIONS.md](OPERATIONS.md) for how to turn
 it on.
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for the full local setup and
-[TOOL_CATALOG.md](TOOL_CATALOG.md) for what `@Inumi` can currently do.
+[TOOL_CATALOG.md](TOOL_CATALOG.md) for what `@Numi` can currently do.
 
 ## Commands
 
@@ -151,7 +151,7 @@ make docker-up       # full stack via docker compose
 - [OPERATIONS.md](OPERATIONS.md) — running it day to day
 - [DEVELOPMENT.md](DEVELOPMENT.md) — local dev setup, project layout, coding standards
 - [TESTING.md](TESTING.md) — test pyramid and how to run each layer
-- [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md) — what to do if Inumi itself is the incident
+- [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md) — what to do if Numi itself is the incident
 
 ## Status
 

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from inumi.common.models.risk import BlastRadius, ReasonCode, RiskLevel
-from inumi.common.models.target import Environment
-from inumi.gateway.domain.risk_engine import RiskEngine
+from numi.common.models.risk import BlastRadius, ReasonCode, RiskLevel
+from numi.common.models.target import Environment
+from numi.gateway.domain.risk_engine import RiskEngine
 
 
 def test_read_tool_on_critical_prod_db_is_low_risk(tool_registry, make_ctx):

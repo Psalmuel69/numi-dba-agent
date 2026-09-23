@@ -1,6 +1,6 @@
 # Tool Catalog
 
-Source of truth: `src/inumi/gateway/domain/tool_catalog.py`. This document
+Source of truth: `src/numi/gateway/domain/tool_catalog.py`. This document
 is a human-readable index of it — if the two ever disagree, the code wins.
 
 Every tool is versioned, schema-validated, and independently re-verified by

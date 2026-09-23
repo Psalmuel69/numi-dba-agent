@@ -5,8 +5,8 @@ test_orchestrator_model_tiering.py."""
 
 from __future__ import annotations
 
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.common.config import Settings
+from numi.agent.llm.registry import LLMRegistry
+from numi.common.config import Settings
 
 
 def _registry(**overrides) -> LLMRegistry:

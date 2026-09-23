@@ -10,8 +10,8 @@ import datetime as dt
 
 import pytest
 
-from inumi.gateway.domain.investigation_memory import InvestigationMemory
-from inumi.gateway.domain.investigation_store import InvestigationStore
+from numi.gateway.domain.investigation_memory import InvestigationMemory
+from numi.gateway.domain.investigation_store import InvestigationStore
 
 
 class _Row:

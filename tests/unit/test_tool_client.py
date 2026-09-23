@@ -9,13 +9,13 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from inumi.agent.tool_client import ToolClient
-from inumi.common.models.tool import ToolCallRequest, ToolCallStatus
-from inumi.common.service_auth import ServiceTokenIssuer
+from numi.agent.tool_client import ToolClient
+from numi.common.models.tool import ToolCallRequest, ToolCallStatus
+from numi.common.service_auth import ServiceTokenIssuer
 
 
 def _issuer() -> ServiceTokenIssuer:
-    return ServiceTokenIssuer("shared-secret", "inumi-internal")
+    return ServiceTokenIssuer("shared-secret", "numi-internal")
 
 
 def _client(handler) -> ToolClient:

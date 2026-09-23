@@ -17,12 +17,12 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager, InvestigationState, PendingApproval
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import IntentExtraction
-from inumi.common.config import Settings
-from inumi.common.models.tool import ToolCallResponse, ToolCallStatus
+from numi.agent.context_manager import ContextManager, InvestigationState, PendingApproval
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import IntentExtraction
+from numi.common.config import Settings
+from numi.common.models.tool import ToolCallResponse, ToolCallStatus
 
 
 class _FakeToolClient:
@@ -215,7 +215,7 @@ async def test_slash_catalog_renders_full_catalog_data_including_least_privilege
                 "warnings": [],
                 "least_privilege": {
                     "checked": True,
-                    "login": "inumi_diag",
+                    "login": "numi_diag",
                     "has_user_table_select": True,
                     "granted_object_count": 3,
                     "count_is_lower_bound": False,
@@ -234,7 +234,7 @@ async def test_slash_catalog_renders_full_catalog_data_including_least_privilege
 
     assert "CoreBanking" in reply.text
     assert "Standard 16.2" in reply.text
-    assert "inumi_diag" in reply.text
+    assert "numi_diag" in reply.text
     assert "current database only" in reply.text
 
 

@@ -186,7 +186,7 @@ vice versa.
 **Mitigation (defense in depth, not full prevention):**
 - **Agent compromised:** no credentials to steal; every proposal still
   passes the Gateway pipeline; service token only grants it audience
-  `inumi-gateway`, nothing else.
+  `numi-gateway`, nothing else.
 - **Gateway compromised:** no database credentials present; can deny/allow
   traffic but cannot fabricate a valid Execution Service token without the
   shared signing secret (which should be rotated/monitored operationally).

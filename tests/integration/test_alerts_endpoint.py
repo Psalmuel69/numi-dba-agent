@@ -19,12 +19,12 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from inumi.agent.api.app import create_app as create_agent_app
-from inumi.channels.api.app import create_app as create_channels_app
-from inumi.channels.slack.sender import SlackMessageSender
-from inumi.common.service_auth import ServiceTokenIssuer
-from inumi.execution.api.app import create_app as create_execution_app
-from inumi.gateway.api.app import create_app as create_gateway_app
+from numi.agent.api.app import create_app as create_agent_app
+from numi.channels.api.app import create_app as create_channels_app
+from numi.channels.slack.sender import SlackMessageSender
+from numi.common.service_auth import ServiceTokenIssuer
+from numi.execution.api.app import create_app as create_execution_app
+from numi.gateway.api.app import create_app as create_gateway_app
 from tests.canned_adapter import canned_adapter_factory
 from tests.stack import test_settings as build_test_settings
 
@@ -44,8 +44,8 @@ def _post_alert(client, secret, body: dict, *, timestamp: str | None = None):
         content=raw,
         headers={
             "Content-Type": "application/json",
-            "X-Inumi-Alert-Timestamp": ts,
-            "X-Inumi-Alert-Signature": _sign(secret, ts, raw),
+            "X-Numi-Alert-Timestamp": ts,
+            "X-Numi-Alert-Signature": _sign(secret, ts, raw),
         },
     )
 
@@ -72,7 +72,7 @@ def test_alerts_trigger_without_a_service_token_is_rejected(agent_settings):
 def test_alerts_trigger_with_a_token_for_a_different_audience_is_rejected(agent_settings):
     app = create_agent_app(agent_settings)
     issuer = ServiceTokenIssuer(agent_settings.service_jwt_secret, agent_settings.service_jwt_issuer)
-    wrong_audience = issuer.issue(service_name="channels", audience="inumi-gateway")
+    wrong_audience = issuer.issue(service_name="channels", audience="numi-gateway")
     with TestClient(app) as client:
         response = client.post(
             "/v1/alerts/trigger",
@@ -242,7 +242,7 @@ async def test_a_signed_alert_reaches_a_real_investigation_and_posts_to_slack():
     async def _capture(self, channel: str, text: str, blocks: list) -> None:
         posted.append((channel, text, blocks))
 
-    import inumi.channels.slack.sender as sender_module
+    import numi.channels.slack.sender as sender_module
 
     original = sender_module.SlackMessageSender.post_message
     sender_module.SlackMessageSender.post_message = _capture
@@ -265,8 +265,8 @@ async def test_a_signed_alert_reaches_a_real_investigation_and_posts_to_slack():
                 content=raw,
                 headers={
                     "Content-Type": "application/json",
-                    "X-Inumi-Alert-Timestamp": ts,
-                    "X-Inumi-Alert-Signature": _sign(ALERT_SECRET, ts, raw),
+                    "X-Numi-Alert-Timestamp": ts,
+                    "X-Numi-Alert-Signature": _sign(ALERT_SECRET, ts, raw),
                 },
             )
     finally:

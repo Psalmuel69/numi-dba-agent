@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.config import Settings
-from inumi.common.ids import new_id
-from inumi.common.models.catalog import ServerCatalog
-from inumi.common.models.execution import DiscoveryRequest, ExecutionRequest, ExecutionResult
-from inumi.common.models.tool import ToolCallRequest, ToolCallStatus
-from inumi.execution.service import ExecutionService
-from inumi.gateway.domain.data_policy import DataMinimizer
-from inumi.gateway.domain.risk_engine import RiskEngine
-from inumi.gateway.domain.tool_call_handler import ToolCallHandler
-from inumi.gateway.infrastructure.execution_client import ExecutionClient, InProcessExecutionClient
+from numi.common.config import Settings
+from numi.common.ids import new_id
+from numi.common.models.catalog import ServerCatalog
+from numi.common.models.execution import DiscoveryRequest, ExecutionRequest, ExecutionResult
+from numi.common.models.tool import ToolCallRequest, ToolCallStatus
+from numi.execution.service import ExecutionService
+from numi.gateway.domain.data_policy import DataMinimizer
+from numi.gateway.domain.risk_engine import RiskEngine
+from numi.gateway.domain.tool_call_handler import ToolCallHandler
+from numi.gateway.infrastructure.execution_client import ExecutionClient, InProcessExecutionClient
 from tests.canned_adapter import canned_adapter_factory
 
 
@@ -150,7 +150,7 @@ async def test_full_approval_workflow_kill_session(
         assert approval_id
 
         approver = await identity_provider.resolve_by_external_account("slack", "U_MOCK_L2")
-        from inumi.gateway.domain.approval import ApprovalDecision, ApprovalEngine
+        from numi.gateway.domain.approval import ApprovalDecision, ApprovalEngine
 
         engine = ApprovalEngine(session)
         await engine.decide(
@@ -175,7 +175,7 @@ async def test_an_actual_execution_attempt_that_fails_is_reported_as_failed_not_
     playbook): `database.get_error_logs` hit a genuine Execution Service failure
     (`success=False, error_code=EXECUTION_FAILED`) — a real *attempt* that didn't
     succeed, not a Gateway refusal. `handle_tool_call`'s single outer
-    `except InumiError` previously converted this to `ToolCallStatus.DENIED`
+    `except NumiError` previously converted this to `ToolCallStatus.DENIED`
     unconditionally (correct only for pre-execution refusals), which aborted the
     whole investigation instead of reaching the orchestrator's already-correct
     `ToolCallStatus.FAILED` handling (record the failure as evidence and keep
@@ -264,7 +264,7 @@ async def test_execution_denied_if_agent_alters_action_after_approval(
         first = await handler.handle(identity, request)
         approval_id = first.approval_id
 
-        from inumi.gateway.domain.approval import ApprovalDecision, ApprovalEngine
+        from numi.gateway.domain.approval import ApprovalDecision, ApprovalEngine
 
         engine = ApprovalEngine(session)
         await engine.decide(

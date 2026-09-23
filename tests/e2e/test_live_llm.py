@@ -23,10 +23,10 @@ import os
 
 import pytest
 
-from inumi.agent.llm.anthropic_provider import AnthropicLLMProvider
-from inumi.agent.llm.gemini_provider import GeminiLLMProvider
-from inumi.agent.llm.openai_provider import DeepSeekLLMProvider, OpenAILLMProvider
-from inumi.agent.planner.actions import AskClarification, ProposeToolCall
+from numi.agent.llm.anthropic_provider import AnthropicLLMProvider
+from numi.agent.llm.gemini_provider import GeminiLLMProvider
+from numi.agent.llm.openai_provider import DeepSeekLLMProvider, OpenAILLMProvider
+from numi.agent.planner.actions import AskClarification, ProposeToolCall
 
 _OPT_IN = os.environ.get("RUN_LIVE_LLM_TESTS") == "1"
 

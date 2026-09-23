@@ -257,7 +257,7 @@ only partially enforced — called out honestly rather than papered over.
     `TOOL_CALL_FAILED`, `APPROVAL_REQUESTED`), and `ApprovalEngine`
     separately records `CREATED`/`APPROVER_1_APPROVED`/
     `APPROVER_2_APPROVED`/`APPROVED`/`REJECTED`/`EXPIRED`/`EXECUTED`
-    events. `handle`'s single `except InumiError` block (around
+    events. `handle`'s single `except NumiError` block (around
     `tool_call_handler.py` line 109) picks `TOOL_CALL_DENIED` vs.
     `TOOL_CALL_FAILED` from the `FailureCode`: `EXECUTION_FAILED`/
     `EXECUTION_TIMEOUT`/`DATABASE_UNAVAILABLE` — the only codes that can be
@@ -316,7 +316,7 @@ and are identical regardless of provider).
 
 With no key set at all, `effective_default_llm()` returns `("mock", …)` —
 and `validate_for_production()` refuses to start the process in that state
-when `INUMI_ENV=production`.
+when `NUMI_ENV=production`.
 
 **Resilience.** A provider outage or malformed completion never crashes the
 chat or hangs it indefinitely — it degrades to a clear message. Each

@@ -9,11 +9,11 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager, ConversationState, InvestigationState, PendingApproval
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import ProposeToolCall
-from inumi.common.models.tool import ToolCallResponse, ToolCallStatus
+from numi.agent.context_manager import ContextManager, ConversationState, InvestigationState, PendingApproval
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import ProposeToolCall
+from numi.common.models.tool import ToolCallResponse, ToolCallStatus
 
 
 class _FakeToolClient:

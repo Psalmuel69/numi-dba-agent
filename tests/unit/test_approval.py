@@ -4,10 +4,10 @@ import datetime as dt
 
 import pytest
 
-from inumi.common.models.failures import FailureCode, InumiError
-from inumi.common.models.risk import BlastRadius, RiskAssessment, RiskLevel
-from inumi.common.models.target import DatabaseTarget, Environment
-from inumi.gateway.domain.approval import (
+from numi.common.models.failures import FailureCode, NumiError
+from numi.common.models.risk import BlastRadius, RiskAssessment, RiskLevel
+from numi.common.models.target import DatabaseTarget, Environment
+from numi.gateway.domain.approval import (
     ApprovalContext,
     ApprovalDecision,
     ApprovalEngine,
@@ -66,7 +66,7 @@ async def test_approval_mismatch_when_action_changes_after_approval(
         # Attacker/agent now tries to execute against a DIFFERENT session id,
         # reusing the same approval_id.
         ctx_9183 = _ctx(tool_registry, approver, "9183")
-        with pytest.raises(InumiError) as exc:
+        with pytest.raises(NumiError) as exc:
             await engine.verify_for_execution(
                 approval_id=record.approval_id,
                 expected_action_hash=ctx_9183.action_hash(),
@@ -88,7 +88,7 @@ async def test_approval_expired_denies_execution(db, tool_registry, identity_pro
         )
 
         later = dt.datetime.now(dt.UTC) + dt.timedelta(seconds=120)
-        with pytest.raises(InumiError) as exc:
+        with pytest.raises(NumiError) as exc:
             await engine.verify_for_execution(
                 approval_id=record.approval_id,
                 expected_action_hash=ctx.action_hash(),
@@ -124,7 +124,7 @@ async def test_client_side_approved_true_is_never_trusted(db, tool_registry, ide
         ctx = _ctx(tool_registry, approver, "9182")
         record = await engine.create(ctx, requires_dual_approval=False)
         # Never approved.
-        with pytest.raises(InumiError) as exc:
+        with pytest.raises(NumiError) as exc:
             await engine.verify_for_execution(
                 approval_id=record.approval_id, expected_action_hash=ctx.action_hash()
             )
@@ -140,7 +140,7 @@ async def test_requester_cannot_self_approve_dual_approval_action(
         engine = ApprovalEngine(session)
         ctx = _ctx(tool_registry, requester, "9182")
         record = await engine.create(ctx, requires_dual_approval=True)
-        with pytest.raises(InumiError) as exc:
+        with pytest.raises(NumiError) as exc:
             await engine.decide(
                 approval_id=record.approval_id,
                 approver=requester,
@@ -166,14 +166,14 @@ async def test_dual_approval_requires_two_distinct_approvers(
             approval_id=record.approval_id, approver=approver1, decision=ApprovalDecision.APPROVE
         )
         # Not fully approved yet — execution must still be denied.
-        with pytest.raises(InumiError) as exc:
+        with pytest.raises(NumiError) as exc:
             await engine.verify_for_execution(
                 approval_id=record.approval_id, expected_action_hash=ctx.action_hash()
             )
         assert exc.value.code == FailureCode.APPROVAL_REQUIRED
 
         # Same approver trying again must not count as the second approver.
-        with pytest.raises(InumiError) as exc:
+        with pytest.raises(NumiError) as exc:
             await engine.decide(
                 approval_id=record.approval_id,
                 approver=approver1,

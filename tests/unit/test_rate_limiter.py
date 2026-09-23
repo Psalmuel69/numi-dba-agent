@@ -6,9 +6,9 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.common.config import Settings
-from inumi.gateway.api.state import _build_rate_limit_backend
-from inumi.gateway.domain.rate_limiter import (
+from numi.common.config import Settings
+from numi.gateway.api.state import _build_rate_limit_backend
+from numi.gateway.domain.rate_limiter import (
     InMemoryRateLimitBackend,
     RedisRateLimitBackend,
 )
@@ -51,7 +51,7 @@ async def test_in_memory_backend_keys_are_independent():
 async def test_in_memory_backend_resets_after_the_window_elapses(monkeypatch):
     backend = InMemoryRateLimitBackend()
     now = [1000.0]
-    monkeypatch.setattr("inumi.common.rate_limit_backend.time.time", lambda: now[0])
+    monkeypatch.setattr("numi.common.rate_limit_backend.time.time", lambda: now[0])
 
     for _ in range(5):
         await backend.increment_and_check("k", limit=5, window_seconds=60)

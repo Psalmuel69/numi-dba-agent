@@ -5,16 +5,16 @@ import datetime as dt
 import pytest
 from pydantic import ValidationError
 
-from inumi.common.models.failures import FailureCode, InumiError
-from inumi.common.models.target import DatabaseTarget, Environment
-from inumi.gateway.domain.catalog import (
+from numi.common.models.failures import FailureCode, NumiError
+from numi.common.models.target import DatabaseTarget, Environment
+from numi.gateway.domain.catalog import (
     DiscoveredDatabase,
     DiscoveredObject,
     InMemoryCatalogStore,
     ServerCatalog,
 )
-from inumi.gateway.domain.servers import AmbiguousServerError, ServerRegistry
-from inumi.gateway.domain.target_validation import TargetValidator
+from numi.gateway.domain.servers import AmbiguousServerError, ServerRegistry
+from numi.gateway.domain.target_validation import TargetValidator
 
 
 async def test_resolves_unambiguous_server_by_alias(target_validator):
@@ -26,7 +26,7 @@ async def test_resolves_unambiguous_server_by_alias(target_validator):
 
 async def test_unregistered_server_is_invalid_target(target_validator):
     target = DatabaseTarget(environment=Environment.PRODUCTION, instance="totally-unknown-box")
-    with pytest.raises(InumiError) as exc:
+    with pytest.raises(NumiError) as exc:
         await target_validator.validate(target, ["environment", "instance"])
     assert exc.value.code == FailureCode.INVALID_TARGET
 
@@ -34,7 +34,7 @@ async def test_unregistered_server_is_invalid_target(target_validator):
 async def test_cannot_cross_environments_implicitly(target_validator):
     # A dev server's id/alias must never resolve when environment=production.
     target = DatabaseTarget(environment=Environment.PRODUCTION, instance="sqlserver-dev-01")
-    with pytest.raises(InumiError):
+    with pytest.raises(NumiError):
         await target_validator.validate(target, ["environment", "instance"])
 
 
@@ -72,7 +72,7 @@ async def test_database_validated_against_the_discovered_catalog():
     )
     assert ok.database == "CoreBanking"  # canonical casing from the catalog
 
-    with pytest.raises(InumiError) as exc:
+    with pytest.raises(NumiError) as exc:
         await validator.validate(
             DatabaseTarget(
                 environment=Environment.PRODUCTION, instance="core-banking", database="NoSuchDb"
@@ -98,7 +98,7 @@ async def test_unknown_object_is_rejected_when_catalog_is_populated():
         )
     )
     validator = TargetValidator(registry, catalog)
-    with pytest.raises(InumiError):
+    with pytest.raises(NumiError):
         await validator.validate(
             DatabaseTarget(
                 environment=Environment.PRODUCTION,

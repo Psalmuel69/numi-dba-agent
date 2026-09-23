@@ -7,8 +7,8 @@ from __future__ import annotations
 import pytest
 import pytest_asyncio
 
-from inumi.gateway.domain.investigation_store import DbInvestigationStore
-from inumi.gateway.infrastructure.db.session import Database
+from numi.gateway.domain.investigation_store import DbInvestigationStore
+from numi.gateway.infrastructure.db.session import Database
 
 
 @pytest_asyncio.fixture
@@ -135,7 +135,7 @@ async def test_recent_for_server_excludes_the_given_id(database):
 async def test_append_event_persists_a_row(database):
     from sqlalchemy import select
 
-    from inumi.gateway.infrastructure.db.models import InvestigationEventRecord
+    from numi.gateway.infrastructure.db.models import InvestigationEventRecord
 
     store = DbInvestigationStore(database.session_factory)
     await store.create(**_fields("inv_1"))

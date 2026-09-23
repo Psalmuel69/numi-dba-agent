@@ -6,12 +6,12 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.llm.anthropic_provider import AnthropicLLMProvider
-from inumi.agent.llm.gemini_provider import GeminiLLMProvider
-from inumi.agent.llm.mock import MockLLMProvider
-from inumi.agent.llm.openai_provider import DeepSeekLLMProvider, OpenAILLMProvider
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.common.config import Settings
+from numi.agent.llm.anthropic_provider import AnthropicLLMProvider
+from numi.agent.llm.gemini_provider import GeminiLLMProvider
+from numi.agent.llm.mock import MockLLMProvider
+from numi.agent.llm.openai_provider import DeepSeekLLMProvider, OpenAILLMProvider
+from numi.agent.llm.registry import LLMRegistry
+from numi.common.config import Settings
 
 
 def _registry(**overrides) -> LLMRegistry:

@@ -5,7 +5,7 @@ Revises:
 Create Date: 2026-01-01
 
 This revision creates every control-plane table directly from the
-SQLAlchemy ORM metadata (`inumi.gateway.infrastructure.db.models.Base`)
+SQLAlchemy ORM metadata (`numi.gateway.infrastructure.db.models.Base`)
 rather than hand-written `op.create_table` calls, since the models module
 is itself the single source of truth for the schema (spec §58). Subsequent
 schema changes should add incremental revisions using
@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from alembic import op
 
-from inumi.gateway.infrastructure.db.models import Base
+from numi.gateway.infrastructure.db.models import Base
 
 revision = "0001"
 down_revision = None

@@ -6,12 +6,12 @@ from __future__ import annotations
 
 import httpx
 
-from inumi.agent.api.app import create_app as create_agent_app
-from inumi.channels.api.app import create_app as create_channels_app
-from inumi.common.config import Settings
-from inumi.common.service_auth import ServiceTokenIssuer
-from inumi.execution.api.app import create_app as create_execution_app
-from inumi.gateway.api.app import create_app as create_gateway_app
+from numi.agent.api.app import create_app as create_agent_app
+from numi.channels.api.app import create_app as create_channels_app
+from numi.common.config import Settings
+from numi.common.service_auth import ServiceTokenIssuer
+from numi.execution.api.app import create_app as create_execution_app
+from numi.gateway.api.app import create_app as create_gateway_app
 from tests.canned_adapter import canned_adapter_factory
 
 
@@ -20,7 +20,7 @@ def test_settings(**overrides) -> Settings:
         _env_file=None,
         control_db_url="sqlite+aiosqlite:///:memory:",
         service_jwt_secret="test-secret",
-        service_jwt_issuer="inumi-internal",
+        service_jwt_issuer="numi-internal",
         llm_provider="mock",
         slack_signing_secret="test-slack-signing-secret",
         teams_app_password="dev-teams-shared-token",
@@ -46,14 +46,14 @@ class Stack:
         await self.gateway_app.state.gateway.db.create_all()
 
     def agent_service_token(self) -> str:
-        return self._issuer.issue(service_name="agent", audience="inumi-gateway")
+        return self._issuer.issue(service_name="agent", audience="numi-gateway")
 
     def channels_service_token(self) -> str:
-        return self._issuer.issue(service_name="channels", audience="inumi-agent")
+        return self._issuer.issue(service_name="channels", audience="numi-agent")
 
     def forged_token(self, secret: str = "wrong-secret") -> str:
         forged_issuer = ServiceTokenIssuer(secret, self.settings.service_jwt_issuer)
-        return forged_issuer.issue(service_name="agent", audience="inumi-gateway")
+        return forged_issuer.issue(service_name="agent", audience="numi-gateway")
 
 
 async def build_stack(**settings_overrides) -> Stack:

@@ -13,16 +13,16 @@ from __future__ import annotations
 
 import httpx
 
-from inumi.agent.context_manager import ContextManager, ConversationState, InvestigationState
-from inumi.agent.llm.mock import MockLLMProvider
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import Conclude, CritiqueVerdict
-from inumi.agent.tool_client import ToolClient
-from inumi.common.config import Settings
-from inumi.common.service_auth import ServiceTokenIssuer
-from inumi.execution.api.app import create_app as create_execution_app
-from inumi.gateway.api.app import create_app as create_gateway_app
+from numi.agent.context_manager import ContextManager, ConversationState, InvestigationState
+from numi.agent.llm.mock import MockLLMProvider
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import Conclude, CritiqueVerdict
+from numi.agent.tool_client import ToolClient
+from numi.common.config import Settings
+from numi.common.service_auth import ServiceTokenIssuer
+from numi.execution.api.app import create_app as create_execution_app
+from numi.gateway.api.app import create_app as create_gateway_app
 from tests.canned_adapter import canned_adapter_factory
 
 
@@ -31,7 +31,7 @@ def _settings() -> Settings:
         _env_file=None,
         control_db_url="sqlite+aiosqlite:///:memory:",
         service_jwt_secret="test-secret",
-        service_jwt_issuer="inumi-internal",
+        service_jwt_issuer="numi-internal",
         llm_provider="mock",
     )
 
@@ -105,7 +105,7 @@ async def test_greeting_returns_help_text_without_starting_investigation():
         channel_thread_id="",
         message="hello",
     )
-    assert "Inumi" in reply.text
+    assert "Numi" in reply.text
 
 
 async def test_l1_user_gets_denied_response_not_a_crash():

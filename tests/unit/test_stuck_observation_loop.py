@@ -17,8 +17,8 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import Conclude, ProposeToolCall, RecordObservation
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import Conclude, ProposeToolCall, RecordObservation
 from tests.unit.test_orchestrator_playbooks import (
     _ALL_READ_TOOL_IDS,
     _FakeLLM,
@@ -101,7 +101,7 @@ async def test_the_replication_playbook_no_longer_burns_the_full_turn_cap():
 
 
 def test_the_nudge_only_appears_after_an_observation_has_been_recorded():
-    from inumi.agent.context_manager import InvestigationState
+    from numi.agent.context_manager import InvestigationState
 
     investigation = InvestigationState(investigation_id="inv1", problem="check CoreBanking")
     assert "MUST use action=conclude" not in AgentOrchestrator._problem_statement_for_llm(investigation)

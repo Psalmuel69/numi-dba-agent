@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import Conclude, CritiqueVerdict, IntentExtraction
+from numi.agent.context_manager import ContextManager
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import Conclude, CritiqueVerdict, IntentExtraction
 
 
 class _FakeToolClient:

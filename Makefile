@@ -38,16 +38,16 @@ migrate:
 	$(PY) -m alembic upgrade head
 
 run-gateway:
-	$(PY) -m uvicorn inumi.gateway.api.app:app --reload --port 8001
+	$(PY) -m uvicorn numi.gateway.api.app:app --reload --port 8001
 
 run-execution:
-	$(PY) -m uvicorn inumi.execution.api.app:app --reload --port 8002
+	$(PY) -m uvicorn numi.execution.api.app:app --reload --port 8002
 
 run-agent:
-	$(PY) -m uvicorn inumi.agent.api.app:app --reload --port 8000
+	$(PY) -m uvicorn numi.agent.api.app:app --reload --port 8000
 
 run-channels:
-	$(PY) -m uvicorn inumi.channels.api.app:app --reload --port 8003
+	$(PY) -m uvicorn numi.channels.api.app:app --reload --port 8003
 
 docker-up:
 	docker compose up --build

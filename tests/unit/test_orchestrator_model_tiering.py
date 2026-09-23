@@ -11,12 +11,12 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager, ConversationState
-from inumi.agent.llm.openai_provider import _OPENAI_DEFAULT_MODEL
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import Conclude, CritiqueVerdict, IntentExtraction
-from inumi.common.config import Settings
+from numi.agent.context_manager import ContextManager, ConversationState
+from numi.agent.llm.openai_provider import _OPENAI_DEFAULT_MODEL
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import Conclude, CritiqueVerdict, IntentExtraction
+from numi.common.config import Settings
 
 
 def _orchestrator(**settings_overrides) -> AgentOrchestrator:

@@ -1,8 +1,8 @@
 # Incident Response
 
-This document is about incidents *in Inumi itself* — a suspected security
+This document is about incidents *in Numi itself* — a suspected security
 issue, a misbehaving approval, or the Gateway making a wrong call. For
-using Inumi to respond to a *database* incident, see the worked example in
+using Numi to respond to a *database* incident, see the worked example in
 [README.md](README.md) and [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Suspected unauthorized action

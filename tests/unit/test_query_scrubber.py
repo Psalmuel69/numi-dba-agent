@@ -10,11 +10,11 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.execution.adapters.mysql import MySQLAdapter
-from inumi.execution.adapters.postgresql import PostgreSQLAdapter
-from inumi.execution.adapters.sqlserver import SQLServerAdapter
-from inumi.gateway.domain.data_policy import DataMinimizer, sqlglot_dialect_for_platform
-from inumi.gateway.domain.query_scrubber import REDACTION_PLACEHOLDER, scrub_sql_literals
+from numi.execution.adapters.mysql import MySQLAdapter
+from numi.execution.adapters.postgresql import PostgreSQLAdapter
+from numi.execution.adapters.sqlserver import SQLServerAdapter
+from numi.gateway.domain.data_policy import DataMinimizer, sqlglot_dialect_for_platform
+from numi.gateway.domain.query_scrubber import REDACTION_PLACEHOLDER, scrub_sql_literals
 from tests.fakes import FakeQueryExecutor
 
 # The leak this whole feature exists for: an innocuously-named column whose

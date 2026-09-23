@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import Conclude, CritiqueVerdict
+from numi.agent.context_manager import ContextManager
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import Conclude, CritiqueVerdict
 from tests.unit.test_cross_provider_fallback import _exhausted, _stubbed_registry, _StubProvider
 from tests.unit.test_orchestrator_playbooks import (
     _ALL_READ_TOOL_IDS,

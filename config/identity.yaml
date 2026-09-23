@@ -16,7 +16,7 @@
 
 identity:
   # Any user who is a member of one of these groups is considered part of
-  # the DBA team and may invoke @Inumi at all. Group membership alone does
+  # the DBA team and may invoke @Numi at all. Group membership alone does
   # NOT grant any tool access — role mapping below determines that.
   groups:
     dba_team:
@@ -74,7 +74,7 @@ oidc:
   # authentication event, so this reflects directory state, not a login;
   # anything other than an explicit affirmative reads as false.
   mfa_attribute: "mfaEnrolled"
-  # OAuth scope requested for Inumi's own client-credentials token.
+  # OAuth scope requested for Numi's own client-credentials token.
   scopes: ""
 
 # -----------------------------------------------------------------------------

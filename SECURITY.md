@@ -25,7 +25,7 @@
 | 19 | All writes require explicit policy evaluation | No code path reaches `execution.execute()` without first passing `PolicyEngine.evaluate` |
 | 20 | LLM never part of the security boundary | See "No security by prompt" below |
 | 21 | Literal values never leave a database inside free-text SQL | `gateway/domain/query_scrubber.py::scrub_sql_literals`, applied by `DataMinimizer` to every field matching `DataPolicyConfig.free_text_sql_field_patterns` (`query_text`, `blocked_query`, `deadlock_graph`, `message`, ...) at step 10 of `tool_call_handler.py` — sqlglot replaces every literal with `<redacted>` while table/column names and SQL structure survive; unparseable text (log lines, plan XML) falls back to a deliberately blunt regex scrub rather than passing through |
-| 22 | The diagnostic login's least privilege is verified, not assumed | `ServerDiscoverer._check_least_privilege` per engine (`has_table_privilege` / `HAS_PERMS_BY_NAME` / the three `information_schema` privilege views), run once per discovery run — a login holding SELECT on any user table/view produces a `LeastPrivilegeFinding` on `ServerCatalog`, a WARNING-level `least_privilege_violation` log record, and a visible warning in `/catalog <server>`. Read-only introspection: Inumi reports, a human DBA revokes — nothing here attempts a REVOKE |
+| 22 | The diagnostic login's least privilege is verified, not assumed | `ServerDiscoverer._check_least_privilege` per engine (`has_table_privilege` / `HAS_PERMS_BY_NAME` / the three `information_schema` privilege views), run once per discovery run — a login holding SELECT on any user table/view produces a `LeastPrivilegeFinding` on `ServerCatalog`, a WARNING-level `least_privilege_violation` log record, and a visible warning in `/catalog <server>`. Read-only introspection: Numi reports, a human DBA revokes — nothing here attempts a REVOKE |
 
 ## No security by prompt
 
@@ -52,7 +52,7 @@ coin flip, the security properties above would be unchanged, because:
 - `IDENTITY_PROVIDER=oidc` selects `OIDCIdentityProvider`
   (`common/identity/oidc_provider.py`), a real implementation against a
   standards-based IdP — OIDC Discovery for endpoint metadata, OAuth 2.0
-  client credentials for Inumi's own directory access, SCIM 2.0 for the
+  client credentials for Numi's own directory access, SCIM 2.0 for the
   lookup itself (Okta / Entra ID / Ping / generic, no vendor branches).
   Never against Slack/Teams display names.
 - A chat webhook carries no token, so resolution is a *directory query*,
@@ -64,7 +64,7 @@ coin flip, the security properties above would be unchanged, because:
   quote there would be an authentication bypass, not merely a bad query.
 - `refresh(subject_id)` always issues its own directory call; no resolved
   identity is ever cached, so a revoked group takes effect on the next tool
-  call. (Inumi's own client-credentials token *is* cached — that
+  call. (Numi's own client-credentials token *is* cached — that
   authenticates the service, not the user.)
 - Every failure mode — network, auth, 5xx, inactive account, ambiguous
   match, malformed resource — returns `None`, which every call site already
@@ -95,12 +95,12 @@ coin flip, the security properties above would be unchanged, because:
 - Every real backend maps *any* SDK/network/auth failure, and any secret
   that isn't a complete credential (missing `password`, non-integer
   `port`, non-JSON payload), onto
-  `InumiError(DEPENDENCY_UNAVAILABLE)`. A raw vendor exception never
+  `NumiError(DEPENDENCY_UNAVAILABLE)`. A raw vendor exception never
   escapes that module — it would carry secret paths/ARNs, vendor stack
   traces, and sometimes the secret material itself past the failure
   boundary — and a partial credential is never returned.
 - Error text naming a bad secret names *fields*, never values; vendor
-  detail is confined to `InumiError.internal_detail` (logs/audit only).
+  detail is confined to `NumiError.internal_detail` (logs/audit only).
 - Structured logging (`common/observability.py`) redacts any field whose
   *name* matches a secret-shaped pattern (`password`, `token`, `secret`,
   `api_key`, `connection_string`, ...) as a defense-in-depth backstop — the
@@ -126,5 +126,5 @@ audience-scoped, HMAC-signed tokens for every internal hop
 
 If the Policy Engine, identity provider, server registry, or credential
 provider is unavailable or misconfigured, the affected request is denied
-(`InumiError`), never silently allowed. See `THREAT_MODEL.md` for the
+(`NumiError`), never silently allowed. See `THREAT_MODEL.md` for the
 specific failure-mode tests.

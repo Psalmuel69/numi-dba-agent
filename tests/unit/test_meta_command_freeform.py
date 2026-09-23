@@ -10,11 +10,11 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager, PendingApproval
-from inumi.agent.llm.mock import MockLLMProvider
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import IntentExtraction
+from numi.agent.context_manager import ContextManager, PendingApproval
+from numi.agent.llm.mock import MockLLMProvider
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import IntentExtraction
 
 
 class _FakeToolClient:
@@ -206,7 +206,7 @@ async def test_a_freeform_status_request_with_no_investigation_says_so():
 
 @pytest.mark.asyncio
 async def test_a_freeform_approve_with_a_pending_approval_actually_approves_it():
-    from inumi.common.models.tool import ToolCallResponse, ToolCallStatus
+    from numi.common.models.tool import ToolCallResponse, ToolCallStatus
 
     class _ApprovingToolClient(_FakeToolClient):
         async def approve(self, approval_id, channel, channel_account_id):
@@ -290,7 +290,7 @@ async def test_a_freeform_help_request_gets_the_help_text():
         message="what can you do",
     )
 
-    assert "Inumi" in reply.text
+    assert "Numi" in reply.text
 
 
 @pytest.mark.asyncio

@@ -26,7 +26,7 @@ Execution Service (execution/)
 ```
 
 Every arrow above is a real network hop (HTTP + a signed, audience-scoped
-service token — `inumi.common.service_auth`), not a function call inside one
+service token — `numi.common.service_auth`), not a function call inside one
 process. That's deliberate: the trust boundary is the *service* boundary,
 not a class boundary a bug could accidentally erase.
 
@@ -73,9 +73,9 @@ not a class boundary a bug could accidentally erase.
    DENIED / FAILED) — never a stack trace, never raw DB error text.
 
    **DENIED vs. FAILED** (`tool_call_handler.py::handle`'s single
-   `except InumiError`, ~line 109): DENIED means the Gateway refused
+   `except NumiError`, ~line 109): DENIED means the Gateway refused
    *before* dispatching to the Execution Service — target/auth/rate-limit/
-   policy/risk/approval all raise `InumiError` codes that stay DENIED
+   policy/risk/approval all raise `NumiError` codes that stay DENIED
    (`INVALID_TARGET`, `UNAUTHORIZED`, `POLICY_DENIED`, `APPROVAL_*`,
    `RATE_LIMITED`, etc.). FAILED means step 9 actually dispatched to the
    Execution Service and the attempt itself didn't succeed —
@@ -167,7 +167,7 @@ Within the turn/observation bounds, a step is decided one of two ways:
   playbook has no analog here — `configuration_review` (get_configuration +
   get_health only) fills that gap, scoped honestly to rule-of-thumb
   misconfiguration flags rather than true capacity-based sizing, since
-  Inumi's server registry has no instance-class/hardware-sizing data to
+  Numi's server registry has no instance-class/hardware-sizing data to
   size against.
 
   Checked against a separate external playbook specification: the original
@@ -216,7 +216,7 @@ Within the turn/observation bounds, a step is decided one of two ways:
   now explicitly says host/container-level memory isn't something this
   system can directly measure (no host/OS-level diagnostic tool exists
   here) rather than claiming to assess it, and none of the 7 claim any
-  capacity forecasting or trend-over-time analysis — Inumi has no
+  capacity forecasting or trend-over-time analysis — Numi has no
   historical/time-series data store, so every playbook's conclusion is
   still built only from what its own diagnostic calls returned in this one
   investigation.
@@ -387,7 +387,7 @@ as evidence, and the loop continues — so the model's next turn sees its
 proposal went nowhere and writes it up as a recommendation instead, which is
 exactly the output this feature wants. It also surfaces in the digest
 (`ScheduledSummary.dropped_proposals`), worded so it can't be misread as
-something Inumi did: "Inumi *would have* proposed ...".
+something Numi did: "Numi *would have* proposed ...".
 
 **Nothing here is a new route to a database.** Every call goes through the
 same ToolClient → Gateway → Execution pipeline as a DBA's message,
@@ -441,7 +441,7 @@ digest that simply doesn't arrive is indistinguishable from a quiet morning.
 no channel credential and must not start holding one — it is the service
 running attacker-influenceable model output. `ChannelsDigestPublisher` posts
 to a new `POST /v1/notify` on the Channels service with the same signed,
-audience-scoped service token (`inumi-channels`) every other internal hop
+audience-scoped service token (`numi-channels`) every other internal hop
 uses, and Channels does the rendering and the Slack call, exactly as it
 already does for every reply. That endpoint delivers text and nothing else:
 it takes no identity, no approval_id and no conversation, and the
@@ -474,7 +474,7 @@ building the app to inspect its routes, never spins up a background job.
 The digest above is triggered by a clock; `agent/alert_trigger.py` is the
 same shape triggered by an event instead — an external monitoring system
 (Prometheus Alertmanager, Datadog, a cloud provider's own alarms, ...)
-reports a threshold breach, and Inumi investigates it unattended, the same
+reports a threshold breach, and Numi investigates it unattended, the same
 way it would sweep a server at 6am.
 
 **Every constraint the digest section above documents applies here
@@ -1248,7 +1248,7 @@ already final. `slack_interactive` now calls
 `SlackMessageSender.update_message` (Slack's `chat.update`) against the
 card's own message (`payload["message"]["ts"]`/`blocks` — Slack's own echo
 of the message the click happened on) to replace its `actions` block (found
-by `block_id == f"inumi_approval_{approval_id}"`, set when the card was
+by `block_id == f"numi_approval_{approval_id}"`, set when the card was
 first rendered) with a static line: "✅ Approved by \<name\>" or "❌
 Rejected by \<name\>". Slack buttons have no disabled-but-visible state to
 toggle — swapping the interactive block for a plain one, the same pattern
@@ -1282,7 +1282,7 @@ separation-of-duties case that exposed the first version's bug).
 `/webhooks/slack` unconditionally read `event["user"]` after checking only
 `event.get("type") != "message"` and `event.get("bot_id")` — found live as
 a genuine, unhandled `KeyError` 500ing the whole webhook. Slack sends
-several `message`-typed events that are not a DBA sending Inumi a fresh
+several `message`-typed events that are not a DBA sending Numi a fresh
 instruction and carry no top-level `"user"` at all: `message_changed`
 (edits — the author lives nested under `event["message"]["user"]`
 instead), `message_deleted`, and others. Since Slack retries any delivery
@@ -1352,11 +1352,11 @@ attribute name and risking a wrong match.
 **Secrets managers** (`execution/credentials/provider.py`) — one env var
 each (`VAULT_ADDR`+`VAULT_TOKEN`, `AWS_REGION`, `AZURE_KEY_VAULT_URL`,
 `GCP_PROJECT_ID`); cloud auth is the platform's own ambient chain
-(instance/task role, managed identity, ADC), never a key in Inumi's
+(instance/task role, managed identity, ADC), never a key in Numi's
 config. All four read the *same* JSON object — the keys
 `LocalDevCredentialProvider` already reads from
 `config/dev_credentials.yaml` — under a documented per-backend naming
-convention (`secret/inumi/db/<id>`, `inumi/db/<id>`, `inumi-db-<id>`).
+convention (`secret/numi/db/<id>`, `numi/db/<id>`, `numi-db-<id>`).
 Moving from dev to a real manager is a transport change, not a re-modelling.
 
 Each SDK is an optional extra (`secrets-vault`, `secrets-aws`,
@@ -1399,7 +1399,7 @@ The two abstractions fail closed *differently*, because their call sites
 do:
 
 - A `CredentialProvider` **raises**
-  `InumiError(DEPENDENCY_UNAVAILABLE)` — the execution must stop, and a
+  `NumiError(DEPENDENCY_UNAVAILABLE)` — the execution must stop, and a
   raw SDK exception must never escape (it would carry secret paths, vendor
   stack traces, sometimes the secret itself). A secret that exists but is
   incomplete is treated identically to an unreachable manager: never a
@@ -1413,7 +1413,7 @@ do:
 ## Package layout
 
 ```
-src/inumi/
+src/numi/
   common/            # shared vocabulary — no service-specific logic
     models/           # failures, target, tool, risk, identity, execution contracts
     identity/         # IdentityProvider, MockIdentityProvider,
@@ -1664,7 +1664,7 @@ SELECT * FROM accounts WHERE account_number = '1234567890'
 passed through untouched — the field name "query_text" is not sensitive, so
 nothing masked it — into the LLM and from there into a Slack channel. That
 is real customer data leaving the database through the one component whose
-entire premise (SECURITY.md control 13) is that Inumi reads diagnostics and
+entire premise (SECURITY.md control 13) is that Numi reads diagnostics and
 never table contents.
 
 The fix has to keep the statement *useful*. A DBA diagnosing a slow or
@@ -1704,7 +1704,7 @@ unchanged`).
 instinct and is wrong: `?` is itself a real bind-parameter marker in the
 ODBC/MySQL dialects this system talks to, so `... WHERE account_number = ?`
 is indistinguishable from a statement the application genuinely sent
-parameterized. A DBA (and the LLM) could not tell "Inumi removed a value
+parameterized. A DBA (and the LLM) could not tell "Numi removed a value
 here" from "the app used a bind parameter here" — and those call for
 different diagnoses. `<redacted>` can never be mistaken for something the
 application wrote, and it matches the existing `***MASKED***` convention:
@@ -1764,7 +1764,7 @@ no-regression guards in `tests/unit/test_data_policy.py`.
 `execution/discovery/base.py`'s module docstring has always stated the
 premise this whole architecture rests on: "The diagnostic login only needs
 read access to catalog / DMV / stats views ... It should NOT have SELECT on
-user tables — Inumi never reads table contents." Nothing ever checked it.
+user tables — Numi never reads table contents." Nothing ever checked it.
 That made it a statement of intent rather than a control: a login
 provisioned with `db_datareader`, a Postgres superuser, or a MySQL account
 carrying a stray `GRANT SELECT ON *.*` all work perfectly and silently hold
@@ -1804,7 +1804,7 @@ own main cases:
   strictly more access than any per-table grant.
 
 **Read-only, always.** This is introspection of the engine's own privilege
-views and nothing else — Inumi reports, a human DBA revokes. No code path
+views and nothing else — Numi reports, a human DBA revokes. No code path
 here attempts a REVOKE or any other change, pinned per engine by
 `test_no_statement_ever_attempts_to_change_a_privilege`.
 
@@ -1833,7 +1833,7 @@ being silently wrong.
 so it reaches log-based alerting without anyone reading a catalog, and the
 DBA-facing copy renders in `/catalog <server>`
 (`orchestrator.py::_handle_catalog_command`): "⚠️ This server's diagnostic
-login (inumi_diag) has SELECT on 12 user table/views (e.g. dbo.Accounts,
+login (numi_diag) has SELECT on 12 user table/views (e.g. dbo.Accounts,
 dbo.Customers) — should be revoked for least-privilege". Both surfaces
 render `LeastPrivilegeFinding.warning_text()` rather than deriving their
 own wording, the same single-source-of-truth reasoning `_verification_note`

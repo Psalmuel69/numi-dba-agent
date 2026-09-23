@@ -2,7 +2,7 @@
 # Server registry (spec §10, §11 — server-level).
 #
 # You register SERVERS, not individual databases. The discovery crawler
-# (inumi.execution.discovery) enumerates the databases, schemas, tables,
+# (numi.execution.discovery) enumerates the databases, schemas, tables,
 # indexes, and available extensions on each one into the catalog, refreshed
 # on a schedule.
 #
@@ -17,7 +17,7 @@
 # Credentials for `<id>` come from the secrets manager (SECRETS_PROVIDER),
 # or config/dev_credentials.yaml when SECRETS_PROVIDER=local_dev. The
 # diagnostic login should be least-privilege (VIEW SERVER STATE / pg_monitor,
-# no SELECT on user tables — Inumi never reads table data).
+# no SELECT on user tables — Numi never reads table data).
 #
 # Fake data only. Fictitious "core-banking" example mirrors the design spec.
 # =============================================================================

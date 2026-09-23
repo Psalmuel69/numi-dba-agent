@@ -46,7 +46,7 @@ boundary's business logic, `gateway/api/` and its equivalents in
 - Business logic lives in `domain/` modules, not in FastAPI route handlers
   — routers in `api/routers/*.py` should stay a thin translation layer
   between HTTP and a domain call.
-- Every `InumiError` carries a `FailureCode` (`common/models/failures.py`)
+- Every `NumiError` carries a `FailureCode` (`common/models/failures.py`)
   and a safe, user-facing `detail` — never let a raw exception message or
   stack trace reach a channel adapter.
 - New tools: see the "Adding a new tool" section of
@@ -62,16 +62,16 @@ make run-agent       # port 8000
 make run-channels    # port 8003
 ```
 
-Each command runs against `sqlite+aiosqlite:///./inumi_dev.db` by default
+Each command runs against `sqlite+aiosqlite:///./numi_dev.db` by default
 (see `.env.example`); for a closer-to-production setup, run
 `docker compose up postgres redis` first and point `CONTROL_DB_URL` at it.
 
-**On Windows**, start the Execution Service with `python -m inumi.execution`
+**On Windows**, start the Execution Service with `python -m numi.execution`
 instead of `make run-execution` / raw `uvicorn`. psycopg's async mode needs
 a selector-based event loop, and uvicorn forces `ProactorEventLoop` on
-Windows unless told not to *before* it starts — `uvicorn inumi.execution.api.app:app`
+Windows unless told not to *before* it starts — `uvicorn numi.execution.api.app:app`
 can't set that in time (the app module is imported after uvicorn's loop
-already exists). `python -m inumi.execution` sets the policy first. The
+already exists). `python -m numi.execution` sets the policy first. The
 other three services don't open real database connections, so
 `make run-gateway`/`run-agent`/`run-channels` are unaffected.
 

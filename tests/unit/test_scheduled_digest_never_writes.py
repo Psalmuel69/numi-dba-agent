@@ -3,7 +3,7 @@
 Why this file matters more than the rest of the feature put together: every
 other part of the digest, if it breaks, produces a bad *report* — a missing
 server, an ugly format, a duplicated line. This one is the difference
-between "Inumi told a DBA about a blocking chain at 6am" and "Inumi killed a
+between "Numi told a DBA about a blocking chain at 6am" and "Numi killed a
 session on a production database at 6am because nobody was watching and the
 model thought it was a good idea". Proactive output is text and a
 recommendation, never an action (the non-negotiable constraint this whole
@@ -38,17 +38,17 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ConversationState, InvestigationState
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import (
+from numi.agent.context_manager import ConversationState, InvestigationState
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import (
     _READ_ONLY_GUARD_TOOL_ID,
     AgentOrchestrator,
     _is_confirmed_read_tool,
 )
-from inumi.agent.planner.actions import Conclude, CritiqueVerdict, ProposeToolCall
-from inumi.common.config import Settings
-from inumi.common.models.tool import OperationType, ToolCallResponse, ToolCallStatus
-from inumi.gateway.domain.tool_catalog import build_tool_catalog
+from numi.agent.planner.actions import Conclude, CritiqueVerdict, ProposeToolCall
+from numi.common.config import Settings
+from numi.common.models.tool import OperationType, ToolCallResponse, ToolCallStatus
+from numi.gateway.domain.tool_catalog import build_tool_catalog
 
 # The real production catalog, with its real READ/WRITE classifications —
 # the same objects `_continue_investigation` fetches from the Gateway at

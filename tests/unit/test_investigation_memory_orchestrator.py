@@ -8,13 +8,13 @@ from __future__ import annotations
 
 import pytest
 
-from inumi.agent.context_manager import ConversationState, InvestigationState
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import Conclude
-from inumi.common.models.investigation import InvestigationMemoryEntry
-from inumi.common.models.risk import RiskLevel
-from inumi.common.models.tool import OperationType, ToolDefinition
+from numi.agent.context_manager import ConversationState, InvestigationState
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import Conclude
+from numi.common.models.investigation import InvestigationMemoryEntry
+from numi.common.models.risk import RiskLevel
+from numi.common.models.tool import OperationType, ToolDefinition
 from tests.unit.test_orchestrator_playbooks import _FakeLLM
 
 
@@ -149,8 +149,8 @@ async def test_an_unreachable_gateway_never_breaks_the_turn():
     reach at all must still let the investigation conclude normally."""
     import httpx
 
-    from inumi.agent.tool_client import ToolClient
-    from inumi.common.service_auth import ServiceTokenIssuer
+    from numi.agent.tool_client import ToolClient
+    from numi.common.service_auth import ServiceTokenIssuer
 
     class _FailingTools(ToolClient):
         async def available_tools(self, channel, channel_account_id):
@@ -161,7 +161,7 @@ async def test_an_unreachable_gateway_never_breaks_the_turn():
 
     tool_client = _FailingTools(
         "http://gateway",
-        ServiceTokenIssuer("secret", "inumi-internal"),
+        ServiceTokenIssuer("secret", "numi-internal"),
         transport=httpx.MockTransport(_unreachable),
     )
     llm = _FakeLLM(actions=[Conclude(summary="done")])

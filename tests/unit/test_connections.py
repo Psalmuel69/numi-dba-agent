@@ -9,12 +9,12 @@ from typing import Any
 
 import pytest
 
-from inumi.execution.adapters.connections import (
+from numi.execution.adapters.connections import (
     MySQLQueryExecutor,
     PostgreSQLQueryExecutor,
     SQLServerQueryExecutor,
 )
-from inumi.execution.credentials.provider import DatabaseCredentials
+from numi.execution.credentials.provider import DatabaseCredentials
 
 
 def _creds(**options) -> DatabaseCredentials:

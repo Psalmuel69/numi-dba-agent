@@ -22,25 +22,25 @@ from typing import Any
 
 import pytest
 
-from inumi.agent.context_manager import ContextManager
-from inumi.agent.llm import fallback
-from inumi.agent.llm.base import (
+from numi.agent.context_manager import ContextManager
+from numi.agent.llm import fallback
+from numi.agent.llm.base import (
     OVERALL_DEADLINE_SECONDS,
     LLMProviderUnavailableError,
     StructuredLLMProvider,
 )
-from inumi.agent.llm.fallback import (
+from numi.agent.llm.fallback import (
     MIN_PER_ATTEMPT_BUDGET_SECONDS,
     CrossProviderFallbackLLM,
     FallbackEvent,
     fallback_notice_text,
     per_attempt_budget_seconds,
 )
-from inumi.agent.llm.mock import MockLLMProvider
-from inumi.agent.llm.registry import LLMRegistry
-from inumi.agent.orchestrator import AgentOrchestrator
-from inumi.agent.planner.actions import AskClarification, IntentExtraction, ProposeToolCall
-from inumi.common.config import Settings
+from numi.agent.llm.mock import MockLLMProvider
+from numi.agent.llm.registry import LLMRegistry
+from numi.agent.orchestrator import AgentOrchestrator
+from numi.agent.planner.actions import AskClarification, IntentExtraction, ProposeToolCall
+from numi.common.config import Settings
 
 _HEALTH = {
     "action": "propose_tool_call",
@@ -522,7 +522,7 @@ async def test_the_dba_facing_reply_says_which_provider_actually_answered():
         message="what can you do",
     )
 
-    assert "I'm Inumi, your AI DBA assistant." in reply.text  # the real answer still arrived
+    assert "I'm Numi, your AI DBA assistant." in reply.text  # the real answer still arrived
     assert reply.text.endswith("(The gemini service was unavailable, so I used anthropic instead.)")
 
 
